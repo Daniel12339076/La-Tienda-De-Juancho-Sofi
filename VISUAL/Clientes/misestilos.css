@@ -1,0 +1,240 @@
+ /* Fondo negro y texto blanco */
+    body {
+      background-color: black;
+      color: white;
+    }
+
+    /* Bordes de la página */
+    body::before,
+    body::after {
+      content: '';
+      display: block;
+      position: fixed;
+      width: 100%;
+      height: 10px;
+      
+      z-index: 9999;
+    }
+
+    body::before {
+      top: 0;
+    }
+
+    body::after {
+      bottom: 0;
+    }
+
+    /* Estilo para los enlaces */
+    a {
+      color: white;
+    }
+
+    a:hover {
+      color: yellow;
+    }
+
+    /* Navbar */
+    .navbar {
+      font-family: 'Poppins', sans-serif;
+      background-color: black !important;
+      font-weight: bold;
+    }
+
+    .navbar .nav-link {
+      color: white !important;
+    }
+
+    .navbar .nav-link:hover {
+      color: yellow !important;
+    }
+
+    .navbar {
+      border-bottom: 1px solid #444;
+      border-bottom: 5px solid transparent;
+			/* Necesario para aplicar el degradado */
+			border-image: linear-gradient(to right, #ffff00, #ff69b4) 1;
+			/* Degradado amarillo a rosado */
+			border-image-slice: 1;
+			/* Aplica el degradado al borde */
+    }
+
+
+    .hero-section {
+      background-color: black;
+      color: white;
+    }
+
+    /* Tarjetas */
+    .card {
+      background-color: #333;
+      border: 1px solid yellow;
+    }
+
+    .card-title,
+    .card-text {
+      color: white;
+    }
+
+    .ropa-section {
+      background-color: #000;
+      /* Fondo negro puro */
+      color: #fff;
+      /* Texto blanco */
+    }
+
+    .ropa-section .card {
+      background-color: #000;
+      /* Fondo de las tarjetas */
+      color: #fff;
+      /* Texto blanco en las tarjetas */
+      border: 2px solid yellow;
+      /* Amarillo (dorado) */
+    }
+
+    .ropa-section .card:hover {
+      border-color: #fff;
+      /* Borde blanco al pasar el mouse */
+      transition: 0.3s;
+    }
+
+    /* Footer */
+    footer.bg-black {
+      background-color: #000;
+      /* Fondo negro puro */
+      color: #fff;
+      /* Texto blanco */
+      border-top: 2px solid #FFD700;
+      /* Borde superior amarillo (opcional) */
+    }
+
+
+    /* Estilo para submenús */
+    .dropdown-submenu {
+      position: relative;
+    }
+
+    .dropdown-submenu .dropdown-menu {
+      top: 0;
+      left: 100%;
+      margin-top: -1px;
+      display: none;
+      /* Ocultar submenús por defecto */
+    }
+
+    .dropdown-submenu:hover .dropdown-menu {
+      display: block;
+      /* Mostrar submenús al pasar el mouse */
+    }
+
+    /* Estilo general para los menús desplegables */
+    .navbar .dropdown-menu {
+      background-color: black;
+      /* Fondo negro */
+      border: 1px solid yellow;
+      /* Borde amarillo */
+      color: white;
+      /* Texto blanco */
+    }
+
+    /* Estilo para los enlaces dentro del menú */
+    .navbar .dropdown-menu .dropdown-item {
+      color: white;
+      /* Texto blanco */
+      font-weight: bold;
+      /* Texto en negrita */
+      transition: background-color 0.3s, color 0.3s;
+      /* Transición suave */
+    }
+
+    /* Hover en los enlaces del menú */
+    .navbar .dropdown-menu .dropdown-item:hover {
+      background-color: yellow;
+      /* Fondo amarillo al pasar el mouse */
+      color: black;
+      /* Texto negro al pasar el mouse */
+    }
+
+    /* Submenús */
+    .navbar .dropdown-submenu .dropdown-menu {
+      background-color: black;
+      /* Fondo negro */
+      border: 1px solid pink;
+      /* Borde rosa */
+      margin-left: 0.1rem;
+      /* Ajuste de posición */
+    }
+
+    /* Hover en los submenús */
+    .navbar .dropdown-submenu:hover>.dropdown-menu {
+      display: block;
+      /* Mostrar submenú al pasar el mouse */
+    }
+
+    /* Estilo para los enlaces dentro de los submenús */
+    .navbar .dropdown-submenu .dropdown-item {
+      color: white;
+      /* Texto blanco */
+    }
+
+    /* Hover en los enlaces de los submenús */
+    .navbar .dropdown-submenu .dropdown-item:hover {
+      background-color: pink;
+      /* Fondo rosa al pasar el mouse */
+      color: black;
+      /* Texto negro al pasar el mouse */
+    }
+
+    /* Ajuste de posición para submenús */
+    .dropdown-submenu {
+      position: relative;
+    }
+
+    .dropdown-submenu .dropdown-menu {
+      top: 0;
+      left: 100%;
+      /* Posicionar a la derecha del menú principal */
+      margin-top: -1px;
+    }
+
+    footer {
+      background-color: black;
+      color: white;
+    }
+
+    footer a {
+      color: white;
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      color: yellow;
+      text-decoration: underline;
+    }
+
+    footer .btn-outline-light {
+      border-color: yellow;
+      color: yellow;
+    }
+
+    footer .btn-outline-light:hover {
+      background-color: yellow;
+      color: black;
+    }
+
+    /* Separación entre las columnas del footer */
+    footer .col-md-4 {
+      margin-bottom: 30px;
+      /* Espacio entre las columnas */
+    }
+
+    /* Separación entre los elementos de las listas */
+    footer ul li {
+      margin-bottom: 10px;
+      /* Espacio entre los elementos de la lista */
+    }
+
+    /* Separación entre el formulario y las redes sociales */
+    footer .input-group {
+      margin-bottom: 20px;
+      /* Espacio entre el formulario y las redes sociales */
+    }

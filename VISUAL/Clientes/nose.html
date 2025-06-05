@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Colección Apple - Juancho & Sofi</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"> <!-- Font Awesome -->
+<link rel="stylesheet" href="misestilos.css"> <!-- Tu archivo CSS -->
+  <style>
+    body {
+      background-color: black;
+      color: white;
+    }
+
+    /* Bordes de la página */
+    body::before,
+    body::after {
+      content: '';
+      display: block;
+      position: fixed;
+      width: 100%;
+      height: 10px;
+      
+      z-index: 9999;
+    }
+
+    body::before {
+      top: 0;
+    }
+
+    body::after {
+      bottom: 0;
+    }
+
+    /* Estilo para los enlaces */
+    a {
+      color: white;
+    }
+
+    a:hover {
+      color: yellow;
+    }
+
+    /* Navbar */
+    .navbar {
+      font-family: 'Poppins', sans-serif;
+      background-color: black !important;
+      font-weight: bold;
+    }
+
+    .navbar .nav-link {
+      color: white !important;
+    }
+
+    .navbar .nav-link:hover {
+      color: yellow !important;
+    }
+
+    .navbar {
+      border-bottom: 1px solid #444;
+      border-bottom: 5px solid transparent;
+			/* Necesario para aplicar el degradado */
+			border-image: linear-gradient(to right, #ffff00, #ff69b4) 1;
+			/* Degradado amarillo a rosado */
+			border-image-slice: 1;
+			/* Aplica el degradado al borde */
+    }
+
+
+    .hero-section {
+      background-color: black;
+      color: white;
+    }
+
+    /* Tarjetas */
+    .card {
+      background-color: #333;
+      border: 1px solid yellow;
+    }
+
+    .card-title,
+    .card-text {
+      color: white;
+    }
+
+    .ropa-section {
+      background-color: #000;
+      /* Fondo negro puro */
+      color: #fff;
+      /* Texto blanco */
+    }
+
+    .ropa-section .card {
+      background-color: #000;
+      /* Fondo de las tarjetas */
+      color: #fff;
+      /* Texto blanco en las tarjetas */
+      border: 2px solid yellow;
+      /* Amarillo (dorado) */
+    }
+
+    .ropa-section .card:hover {
+      border-color: #fff;
+      /* Borde blanco al pasar el mouse */
+      transition: 0.3s;
+    }
+
+    /* Footer */
+    footer.bg-black {
+      background-color: #000;
+      /* Fondo negro puro */
+      color: #fff;
+      /* Texto blanco */
+      border-top: 2px solid #FFD700;
+      /* Borde superior amarillo (opcional) */
+    }
+
+
+    /* Estilo para submenús */
+    .dropdown-submenu {
+      position: relative;
+    }
+
+    .dropdown-submenu .dropdown-menu {
+      top: 0;
+      left: 100%;
+      margin-top: -1px;
+      display: none;
+      /* Ocultar submenús por defecto */
+    }
+
+    .dropdown-submenu:hover .dropdown-menu {
+      display: block;
+      /* Mostrar submenús al pasar el mouse */
+    }
+
+    /* Estilo general para los menús desplegables */
+    .navbar .dropdown-menu {
+      background-color: black;
+      /* Fondo negro */
+      border: 1px solid yellow;
+      /* Borde amarillo */
+      color: white;
+      /* Texto blanco */
+    }
+
+    /* Estilo para los enlaces dentro del menú */
+    .navbar .dropdown-menu .dropdown-item {
+      color: white;
+      /* Texto blanco */
+      font-weight: bold;
+      /* Texto en negrita */
+      transition: background-color 0.3s, color 0.3s;
+      /* Transición suave */
+    }
+
+    /* Hover en los enlaces del menú */
+    .navbar .dropdown-menu .dropdown-item:hover {
+      background-color: yellow;
+      /* Fondo amarillo al pasar el mouse */
+      color: black;
+      /* Texto negro al pasar el mouse */
+    }
+
+    /* Submenús */
+    .navbar .dropdown-submenu .dropdown-menu {
+      background-color: black;
+      /* Fondo negro */
+      border: 1px solid pink;
+      /* Borde rosa */
+      margin-left: 0.1rem;
+      /* Ajuste de posición */
+    }
+
+    /* Hover en los submenús */
+    .navbar .dropdown-submenu:hover>.dropdown-menu {
+      display: block;
+      /* Mostrar submenú al pasar el mouse */
+    }
+
+    /* Estilo para los enlaces dentro de los submenús */
+    .navbar .dropdown-submenu .dropdown-item {
+      color: white;
+      /* Texto blanco */
+    }
+
+    /* Hover en los enlaces de los submenús */
+    .navbar .dropdown-submenu .dropdown-item:hover {
+      background-color: pink;
+      /* Fondo rosa al pasar el mouse */
+      color: black;
+      /* Texto negro al pasar el mouse */
+    }
+
+    /* Ajuste de posición para submenús */
+    .dropdown-submenu {
+      position: relative;
+    }
+
+    .dropdown-submenu .dropdown-menu {
+      top: 0;
+      left: 100%;
+      /* Posicionar a la derecha del menú principal */
+      margin-top: -1px;
+    }
+
+    footer {
+      background-color: black;
+      color: white;
+    }
+
+    footer a {
+      color: white;
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      color: yellow;
+      text-decoration: underline;
+    }
+
+    footer .btn-outline-light {
+      border-color: yellow;
+      color: yellow;
+    }
+
+    footer .btn-outline-light:hover {
+      background-color: yellow;
+      color: black;
+    }
+
+    /* Separación entre las columnas del footer */
+    footer .col-md-4 {
+      margin-bottom: 30px;
+      /* Espacio entre las columnas */
+    }
+
+    /* Separación entre los elementos de las listas */
+    footer ul li {
+      margin-bottom: 10px;
+      /* Espacio entre los elementos de la lista */
+    }
+
+    /* Separación entre el formulario y las redes sociales */
+    footer .input-group {
+      margin-bottom: 20px;
+      /* Espacio entre el formulario y las redes sociales */
+    }
+    body {
+      background-color: #000;
+      color: white;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    header {
+      background-image: url('ruta/a/tu/banner-apple.png');
+      background-size: cover;
+      background-position: center;
+      padding: 100px 20px;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 3rem;
+      font-weight: bold;
+      color: white;
+      text-shadow: 2px 2px 10px #000;
+    }
+
+    .filtro {
+      background-color: #111;
+      border: 2px solid #ffc107;
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    .producto {
+      background-color: #111;
+      border: 2px solid #ffc107;
+      border-radius: 10px;
+      padding: 10px;
+      text-align: center;
+      transition: transform 0.2s;
+    }
+
+    .producto:hover {
+      transform: scale(1.02);
+      box-shadow: 0 0 15px #ffc10788;
+    }
+
+    .producto img {
+      max-width: 100%;
+      height: auto;
+      margin-bottom: 10px;
+    }
+
+    .precio-original {
+      text-decoration: line-through;
+      color: #aaa;
+      margin: 0;
+    }
+
+    .precio-descuento {
+      color: #ffc107;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .dropdown-select {
+      background-color: #111;
+      color: white;
+      border: 1px solid #ffc107;
+      border-radius: 5px;
+      padding: 5px 10px;
+    }
+
+    .categoria-lateral a {
+      color: white;
+      text-decoration: none;
+      display: block;
+      padding: 6px 0;
+    }
+
+    .categoria-lateral a:hover {
+      color: #ffc107;
+    }
+
+    .btn-carrito {
+      background-color: #ffc107;
+      color: #000;
+      border: none;
+      padding: 6px 12px;
+      font-weight: bold;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+
+    .btn-carrito i {
+      margin-right: 5px;
+    }
+
+    .btn-carrito:hover {
+      background-color: #e0b000;
+    }
+
+    .contenedor-productos {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+      <!-- Logo y menú -->
+      <a class="navbar-brand" href="Pagina inicial.html">
+        <img src="../Image/Logo juancho.png" alt="Logo" width="110" height="110">
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <!-- Links de navegación -->
+      <div class="collapse navbar-collapse bs-body-bg" id="navbarNav">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link" href="Socios.html">Inicio</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="productosDropdown" role="button" data-bs-toggle="dropdown"
+              aria-expanded="false">
+              Productos
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="productosDropdown">
+              <li class="dropdown-submenu">
+                <a class="dropdown-item dropdown-toggle" href="#" id="dropdown_celulares" role="button"
+                  data-bs-toggle="dropdown" aria-expanded="false">Celulares</a>
+                <ul class="dropdown-menu" aria-labelledby="dropdown_celulares">
+                  <li><a class="dropdown-item" href="#">Apple</a></li>
+                  <li><a class="dropdown-item" href="#">Samsung</a></li>
+                  <li><a class="dropdown-item" href="#">Xiaomi</a></li>
+                </ul>
+              </li>
+              <li class="dropdown-submenu">
+                <a class="dropdown-item dropdown-toggle" href="#">Accesorios</a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="#">Fundas</a></li>
+                  <li><a class="dropdown-item" href="#">Cargadores</a></li>
+                  <li><a class="dropdown-item" href="#">Audífonos</a></li>
+                </ul>
+              </li>
+              <li class="dropdown-submenu">
+                <a class="dropdown-item dropdown-toggle" href="#">Ropa</a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="#">Prendas Superiores</a></li>
+                  <li><a class="dropdown-item" href="#">Prendas Inferiores</a></li>
+                  <li><a class="dropdown-item" href="#">Prendas Deportivas</a></li>
+                </ul>
+              </li>
+              <li class="dropdown-submenu">
+                <a class="dropdown-item dropdown-toggle" href="#">Calzado</a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="#">Zapatos Deportivos</a></li>
+                  <li><a class="dropdown-item" href="#">Zapatos Para Dama</a></li>
+                  <li><a class="dropdown-item" href="#">Sandalias</a></li>
+                </ul>
+              </li>
+              <li><a class="dropdown-item" href="#">Ofertas por tiempo limitado</a></li>
+              <li><a class="dropdown-item" href="#">Combos</a></li>
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="servicioDropdown" role="button" data-bs-toggle="dropdown"
+              aria-expanded="false">
+              Servicio Técnico
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="servicioDropdown">
+              <li class="dropdown-submenu">
+                <a class="dropdown-item dropdown-toggle" href="#">Reparaciones</a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="#">Celulares</a></li>
+                  <li><a class="dropdown-item" href="#">Laptops</a></li>
+                  <li><a class="dropdown-item" href="#">Tablets</a></li>
+                </ul>
+              </li>
+              <li class="dropdown-submenu">
+                <a class="dropdown-item dropdown-toggle" href="#">Mantenimiento</a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="#">Hardware</a></li>
+                  <li><a class="dropdown-item" href="#">Software</a></li>
+                </ul>
+              </li>
+
+              <li><a class="dropdown-item" href="#">Asesoramiento técnico</a></li>
+            </ul>
+          </li>
+          <li class="nav-item"><a class="nav-link" href="#">Colecciones</a></li>
+          <li class="nav-item"><a class="nav-link" href="#">Ofertas</a></li>
+        </ul>
+
+        <!-- Logos de patrocinadores y botón de acceso -->
+        <div class="d-flex align-items-center">
+          <a href="buscar.html">
+            <img src="../Image/lupa.png" alt="Buscar" width="50" class="me-3">
+          </a>
+          <a href="comprar.html">
+            <img src="../Image/carrito-de-compras (1).png" alt="Carrito" width="50" class="me-3">
+          </a>
+          <a href="Login.html">
+            <img src="../Image/avatar.png" alt="Avatar" width="50" class="me-3">
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+
+  <header>
+    <img class="Iphone" src="../Image/Iphone.png" alt="" width="100%" height="auto">
+    <h2>Encuentra los mejores productos de Apple</h2>
+  </header>
+
+  <div class="container contenedor-productos">
+    <div class="row">
+      <div class="col-md-2 categoria-lateral">
+        <div class="filtro">
+          <h5>Marcas</h5>
+          <a href="#">Apple</a>
+          <a href="#">Xiaomi</a>
+          <a href="#">Samsung</a>
+          <a href="#">Nokia</a>
+          <a href="#">Motorola</a>
+          <a href="#">Tablets</a>
+          <a href="#">Oppo</a>
+        </div>
+      </div>
+
+      <div class="col-md-10">
+        <div class="d-flex justify-content-end mb-3">
+          <select class="dropdown-select">
+            <option>Características</option>
+            <option>Precio: menor a mayor</option>
+            <option>Precio: mayor a menor</option>
+          </select>
+        </div>
+
+        <div class="row g-4">
+          <!-- Producto 1 -->
+          <div class="col-md-3">
+            <div class="producto">
+              <img src="ruta/a/iphone15.png" alt="iPhone 15">
+              <h6>iPhone 15 128GB</h6>
+              <p class="precio-original">$3.449.000</p>
+              <p class="precio-descuento">$3.049.990</p>
+              <button class="btn-carrito"><i class="fas fa-cart-plus"></i>Agregar al carrito</button>
+            </div>
+          </div>
+
+          <!-- Producto 2 -->
+          <div class="col-md-3">
+            <div class="producto">
+              <img src="ruta/a/iphone13.png" alt="iPhone 13">
+              <h6>iPhone 13 128GB EXH Premium</h6>
+              <p class="precio-original">$2.299.000</p>
+              <p class="precio-descuento">$1.699.990</p>
+              <button class="btn-carrito"><i class="fas fa-cart-plus"></i>Agregar al carrito</button>
+            </div>
+          </div>
+
+          <!-- Producto 3 -->
+          <div class="col-md-3">
+            <div class="producto">
+              <img src="ruta/a/iphone13promax.png" alt="iPhone 13 Pro Max">
+              <h6>iPhone 13 Pro Max 128GB</h6>
+              <p class="precio-original">$2.399.000</p>
+              <p class="precio-descuento">$2.099.990</p>
+              <button class="btn-carrito"><i class="fas fa-cart-plus"></i>Agregar al carrito</button>
+            </div>
+          </div>
+
+          <!-- Producto 4 -->
+          <div class="col-md-3">
+            <div class="producto">
+              <img src="ruta/a/iphone14promax.png" alt="iPhone 14 Pro Max">
+              <h6>iPhone 14 Pro Max 256GB</h6>
+              <p class="precio-original">$4.499.000</p>
+              <p class="precio-descuento">$3.849.990</p>
+              <button class="btn-carrito"><i class="fas fa-cart-plus"></i>Agregar al carrito</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Habilitar submenús en dispositivos táctiles
+      const dropdownSubmenus = document.querySelectorAll('.dropdown-submenu');
+
+      dropdownSubmenus.forEach(function (submenu) {
+        submenu.addEventListener('click', function (e) {
+          e.stopPropagation();
+          const submenuDropdown = this.querySelector('.dropdown-menu');
+          if (submenuDropdown) {
+            submenuDropdown.classList.toggle('show');
+          }
+        });
+      });
+    });
+
+  </script>
+</body>
+</html>
