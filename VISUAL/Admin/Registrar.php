@@ -134,7 +134,7 @@ session_start();
             ?>
         <?php endif; ?>
         
-        <form id="formularioRegistro" method="POST" action="../controladores/UsuarioController.php?action=registrar">
+        <form id="formularioRegistro" method="POST" action="../../controladores/UsuarioController.php?action=registrar">
             <div style="margin-bottom: 20px; font-size: 1.1em;">Crea tu cuenta</div>
             
             <label for="usuario">Usuario</label>
