@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="misstyles.css">
   <link rel="icon" href="Image/Logo juancho.png" type="image/png">
   <style>
-    /* Fondo negro y texto blanco */
+    /* Fondo negro y texto blanco hola soy daniel y esto es una prueba
     body {
       background-color: black;
       color: white;
