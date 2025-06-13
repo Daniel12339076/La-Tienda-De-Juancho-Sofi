@@ -1,114 +1,155 @@
 <?php
-require_once '../config/conexion.php';
+function login($conn, $data) {
+    session_start();
+    $correo=$data['correo'];
+    $clave=$data['clave'];
+    
+    $stmt=$conn->prepare("SELECT * FROM usuarios WHERE correo = ?");
+    $stmt->bind_param("s", $correo);
+    $stmt->execute();
+    $resultado=$stmt->get_result();
 
-class UsuarioModel {
-    private $conexion;
-    
-    public function __construct() {
-        $db = new Conexion();
-        $this->conexion = $db->obtenerConexion();
-    }
-    
-    /**
-     * Registra un nuevo usuario en la base de datos
-     */
-    public function registrarUsuario($usuario, $correo, $celular, $clave, $rol) {
-        // Verificar si el usuario ya existe
-        if ($this->existeUsuario($usuario, $correo)) {
-            return [
-                'success' => false,
-                'message' => 'El usuario o correo ya está registrado'
-            ];
-        }
+    if($resultado->num_rows===1){
+        $row=$resultado->fetch_assoc();
         
-        // Encriptar la contraseña
-        $claveEncriptada = password_hash($clave, PASSWORD_DEFAULT);
-        
-        // Preparar la consulta SQL
-        $sql = "INSERT INTO usuarios (nombre, correo, celular, clave, rol) VALUES (?, ?, ?, ?, ?)";
-        $stmt = $this->conexion->prepare($sql);
-        $stmt->bind_param("sssss", $usuario, $correo, $celular, $claveEncriptada, $rol);
-        
-        // Ejecutar la consulta
-        if ($stmt->execute()) {
-            return [
-                'success' => true,
-                'message' => 'Usuario registrado correctamente'
-            ];
-        } else {
-            return [
-                'success' => false,
-                'message' => 'Error al registrar el usuario: ' . $this->conexion->error
-            ];
-        }
-    }
-    
-    /**
-     * Verifica si un usuario o correo ya existe en la base de datos
-     */
-    public function existeUsuario($usuario, $correo) {
-        $sql = "SELECT COUNT(*) as total FROM usuarios WHERE nombre = ? OR correo = ?";
-        $stmt = $this->conexion->prepare($sql);
-        $stmt->bind_param("ss", $usuario, $correo);
-        $stmt->execute();
-        $resultado = $stmt->get_result();
-        $fila = $resultado->fetch_assoc();
-        
-        return $fila['total'] > 0;
-    }
-    
-    /**
-     * Verifica las credenciales de un usuario para el inicio de sesión
-     */
-    public function verificarCredenciales($usuario, $clave) {
-        $sql = "SELECT id, nombre, correo, celular, clave, rol FROM usuarios WHERE nombre = ?";
-        $stmt = $this->conexion->prepare($sql);
-        $stmt->bind_param("s", $usuario);
-        $stmt->execute();
-        $resultado = $stmt->get_result();
-        
-        if ($resultado->num_rows === 0) {
-            return [
-                'success' => false,
-                'message' => 'Usuario no encontrado'
-            ];
-        }
-        
-        $usuario = $resultado->fetch_assoc();
-        
-        // Verificar la contraseña
-        if (password_verify($clave, $usuario['clave'])) {
-            // Eliminar la clave del array antes de devolverlo
-            unset($usuario['clave']);
+        if(password_verify($clave, $row['clave'])){
+            $_SESSION['id_cliente']=$row['id'];
+            $_SESSION['usuario']=$row['usuario'];
+            $_SESSION['correo']=$row['correo'];
             
-            return [
-                'success' => true,
-                'message' => 'Inicio de sesión exitoso',
-                'usuario' => $usuario
-            ];
-        } else {
-            return [
-                'success' => false,
-                'message' => 'Contraseña incorrecta'
-            ];
+            echo "
+                <script src='../Assets/SweetAlert2/sweetalert2.all.min.js'></script>
+                <script src='../js/funcionesalert.js'></script>
+                <body>
+                        <script>
+                            informar('Bienvenido " . addslashes($_SESSION["usuario"]) . "','ACEPTAR', '../VISUAL/admin/login.php', 'success');
+                        </script>
+            </body>";
+
+            // header("Location: ../js/SweetAlert2/PaginaPrincipal.php");
+            exit();
+        }else{
+         echo "
+                <script src='../Assets/SweetAlert2/sweetalert2.all.min.js'></script>
+                <script src='../js/funcionesalert.js'></script>
+                <body>
+                        <script>
+                            informar('CLAVE INCORRECTA','REINTENTAR', 'http://localhost/La-Tienda-De-Juancho-Sofi/VISUAL/Admin/Registrar.php', 'error');
+                        </script>
+            </body>";
         }
-    }
-    
-    /**
-     * Obtiene todos los usuarios (para administración)
-     */
-    public function obtenerUsuarios() {
-        $sql = "SELECT id, nombre, correo, celular, rol FROM usuarios";
-        $resultado = $this->conexion->query($sql);
-        
-        $usuarios = [];
-        if ($resultado && $resultado->num_rows > 0) {
-            while ($fila = $resultado->fetch_assoc()) {
-                $usuarios[] = $fila;
-            }
-        }
-        
-        return $usuarios;
+    }else{
+        echo "
+                <script src='../Assets/SweetAlert2/sweetalert2.all.min.js'></script>
+                <script src='../js/funcionesalert.js'></script>
+                <body>
+                        <script>
+                            informar('CLIENTE NO ENCONTRADO','REINTENTAR', 'http://localhost/La-Tienda-De-Juancho-Sofi/VISUAL/Admin/Registrar.php', 'warning');
+                        </script>
+            </body>";
+        exit();
     }
 }
+
+function salir(){
+    session_start();
+    session_unset();
+    session_destroy();
+    header("Location: ../js/login.php");
+    exit();
+}
+
+
+function registrar($conn, $data) {
+    date_default_timezone_set('America/Bogota');
+    $fecha_registro = date('Y-m-d H:i:s');
+    $clave_cifrada = password_hash($data['clave'], PASSWORD_DEFAULT);
+
+    $sql = "INSERT INTO usuarios 
+    VALUES (NULL, ?, ?, ?, ?, ?)";
+
+    $stmt = $conn->prepare($sql);
+    if (!$stmt) {
+        die("Error al preparar la consulta: " . $conn->error);
+    }
+
+    $stmt->bind_param(
+        "ssiss", 
+        $data['usuario'], 
+        $data['correo'], 
+        $data['celular'], 
+         
+        $clave_cifrada, 
+        $data['rol']
+    );
+
+    try {
+    if ($stmt->execute()) {
+        // Registro exitoso, guardamos en sesión
+        $_SESSION['usuario'] = $data['usuario'];
+        $_SESSION['correo'] = $data['correo'];
+        $_SESSION['celular'] = $data['celular'];
+        $_SESSION['rol'] = $data['rol'];
+        
+        echo "
+        <script src='../Assets/SweetAlert2/sweetalert2.all.min.js'></script>
+        <script src='../js/funcionesalert.js'></script>
+        <body>
+                <script>
+                    informar('CLIENTE REGISTRADO EXITÓSAMENTE.','Ok.', '../VISUAL/admin/login.php', 'success');
+                </script>
+        </body>";
+        
+        exit();
+    }
+    } catch (mysqli_sql_exception $e) {
+        // Verificamos si es error por duplicado
+        if ($e->getCode() === 1062) {
+            // die("Error: Ya existe un registro con este número de documento o correo electrónico.");
+            
+            echo "
+                <script src='../Assets/SweetAlert2/sweetalert2.all.min.js'></script>
+                <script src='../js/funcionesalert.js'></script>
+                <body>
+                        <script>
+                            informar('El Correo o el Número de Documento ya está registrado. Por favor, verifica los datos ingresados.','REINTENTAR.', '../VISUAL/admin/login.php', 'error');
+                        </script>
+                </body>";
+        } else {
+            die("Error al registrar cliente: " . $e->getMessage());
+        }
+        }
+
+
+    $stmt->close();
+}
+
+
+function obtenerusuarios($conn) {
+    $result = mysqli_query($conn, "SELECT * FROM usuarios");
+    return mysqli_fetch_all($result, MYSQLI_ASSOC);
+}
+
+function eliminar($conn, $id) {
+   
+    mysqli_query($conn, "DELETE FROM usuarios WHERE id=$id");
+    header("Location: ../VISUAL/admin/login.php");
+}
+
+function actualizar($conn, $data) {
+    $sql = "UPDATE usuarios SET 
+        usuario = '{$data['usuario']}',
+        tipo_documento = '{$data['tipo_documento']}',
+        numero_documento = '{$data['numero_documento']}',
+        fecha_nacimiento = '{$data['fecha_nacimiento']}',
+        correo = '{$data['correo']}',
+        celular = '{$data['celular']}',
+        rol = '{$data['rol']}'
+        WHERE id = {$data['id']}";
+
+    mysqli_query($conn, $sql);
+    header("Location: ../VISUAL/admin/login.php");
+}
+
+
 ?>

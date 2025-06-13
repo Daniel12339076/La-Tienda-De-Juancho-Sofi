@@ -123,6 +123,7 @@ session_start();
     <div class="registro-box">
         <div id="mensaje" class="mensaje" style="display: none;"></div>
         
+    <!--quitar-->
         <?php if(isset($_SESSION['mensaje'])): ?>
             <div class="mensaje mensaje-<?php echo $_SESSION['tipo_mensaje']; ?>">
                 <?php echo $_SESSION['mensaje']; ?>
@@ -134,14 +135,14 @@ session_start();
             ?>
         <?php endif; ?>
         
-        <form id="formularioRegistro" method="POST" action="../controladores/UsuarioController.php?action=registrar">
+        <form id="formularioRegistro" method="POST" action="../../controladores/UsuarioController.php?accion=registrar">
             <div style="margin-bottom: 20px; font-size: 1.1em;">Crea tu cuenta</div>
             
             <label for="usuario">Usuario</label>
-            <input type="text" id="usuario" name="usuario" required>
+            <input type="text" id="usuario" name="usuario" placeholder="Nombre Usuario" required>
 
             <label for="correo">Correo electrónico</label>
-            <input type="email" id="correo" name="correo" required>
+            <input type="email" id="correo" name="correo" placeholder="Ej: nombre@dominio.com" required>
 
             <label for="celular">Número de celular</label>
             <input type="tel" id="celular" name="celular" placeholder="Ej: +57 300 123 4567" required>
@@ -162,6 +163,7 @@ session_start();
         <a href="login.php">¿Ya tienes cuenta? Inicia sesión</a>
     </div>
 
+    <!--quitar-->
     <script>
         // Validación del formulario
         document.getElementById('formularioRegistro').addEventListener('submit', function(e) {
