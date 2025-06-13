@@ -1,3 +1,16 @@
+<?php
+
+  session_start();
+  if (!isset($_SESSION['autenticado']) || $_SESSION['autenticado'] !== true) {
+      header('Location: login.php');
+      exit;
+  }
+
+
+  // Obtener información del usuario
+  $usuario = $_SESSION['usuario'];
+  $nombreUsuario = $_SESSION['nombre']
+?>
 <!DOCTYPE html>
 <html lang="es">
 

@@ -1,61 +1,73 @@
 <?php
 function login($conn, $data) {
-    session_start();
-    $correo=$data['correo'];
-    $clave=$data['clave'];
-    
-    $stmt=$conn->prepare("SELECT * FROM usuarios WHERE correo = ?");
+    if (session_status() !== PHP_SESSION_ACTIVE) {
+        session_start();
+    }
+
+    // Validar claves en $data
+    $correo = $data['correo'] ?? null;
+    $clave = $data['clave'] ?? null;
+
+    if (!$correo || !$clave) {
+        echo alertMessage('DATOS INSUFICIENTES', 'REINTENTAR', '../VISUAL/Admin/login.php', 'warning');
+        exit();
+    }
+
+    $stmt = $conn->prepare("SELECT * FROM usuarios WHERE correo = ?");
     $stmt->bind_param("s", $correo);
     $stmt->execute();
-    $resultado=$stmt->get_result();
+    $resultado = $stmt->get_result();
 
-    if($resultado->num_rows===1){
-        $row=$resultado->fetch_assoc();
-        
-        if(password_verify($clave, $row['clave'])){
-            $_SESSION['id_cliente']=$row['id'];
-            $_SESSION['usuario']=$row['usuario'];
-            $_SESSION['correo']=$row['correo'];
-            
-            echo "
-                <script src='../Assets/SweetAlert2/sweetalert2.all.min.js'></script>
-                <script src='../js/funcionesalert.js'></script>
-                <body>
-                        <script>
-                            informar('Bienvenido " . addslashes($_SESSION["usuario"]) . "','ACEPTAR', '../VISUAL/admin/login.php', 'success');
-                        </script>
-            </body>";
+    if ($resultado->num_rows === 1) {
+        $row = $resultado->fetch_assoc();
 
-            // header("Location: ../js/SweetAlert2/PaginaPrincipal.php");
+        if (password_verify($clave, $row['clave'])) {
+            $_SESSION['id_cliente'] = $row['id'];
+            $_SESSION['nombre'] = $row['nombre'];
+            $_SESSION['correo'] = $row['correo'];
+            $_SESSION['autenticado'] = true;
+            $_SESSION['rol'] = $row['rol']; // Guardar el rol del usuario
+
+
+            // Redirigir según el rol del usuario
+            if ($row['rol'] === 'cliente') {
+                //poner la ruta del cliente
+                echo alertMessage("Bienvenido(a): " . addslashes($_SESSION["nombre"]), "SIGUIENTE", "../VISUAL/Clientes/Pagprincipal.php", "success");
+                exit();
+                
+            } else{
+                echo alertMessage("Bienvenido(a): " . addslashes($_SESSION["nombre"]), "SIGUIENTE", "../VISUAL/admin/inicio.php", "success");
+                exit();
+            }   
+
+        } else {
+            echo alertMessage("CLAVE INCORRECTA", "REINTENTAR", "../VISUAL/Admin/login.php", "error");
             exit();
-        }else{
-         echo "
-                <script src='../Assets/SweetAlert2/sweetalert2.all.min.js'></script>
-                <script src='../js/funcionesalert.js'></script>
-                <body>
-                        <script>
-                            informar('CLAVE INCORRECTA','REINTENTAR', 'http://localhost/La-Tienda-De-Juancho-Sofi/VISUAL/Admin/Registrar.php', 'error');
-                        </script>
-            </body>";
         }
-    }else{
-        echo "
-                <script src='../Assets/SweetAlert2/sweetalert2.all.min.js'></script>
-                <script src='../js/funcionesalert.js'></script>
-                <body>
-                        <script>
-                            informar('CLIENTE NO ENCONTRADO','REINTENTAR', 'http://localhost/La-Tienda-De-Juancho-Sofi/VISUAL/Admin/Registrar.php', 'warning');
-                        </script>
-            </body>";
+    } else {
+        echo alertMessage("CLIENTE NO ENCONTRADO", "REINTENTAR", "../VISUAL/Admin/login.php", "warning");
         exit();
     }
 }
+
+function alertMessage($titulo, $boton, $redireccion, $icono) {
+    return "
+        <script src='../Assets/SweetAlert2/sweetalert2.all.min.js'></script>
+        <script src='../js/funcionesalert.js'></script>
+        <body>
+            <script>
+                informar('" . addslashes($titulo) . "', '" . addslashes($boton) . "', '" . $redireccion . "', '" . $icono . "');
+            </script>
+        </body>
+    ";
+}
+
 
 function salir(){
     session_start();
     session_unset();
     session_destroy();
-    header("Location: ../js/login.php");
+    header("Location: ../VISUAL/admin/login.php");
     exit();
 }
 

@@ -1,12 +1,15 @@
 <?php
+
 session_start();
-if (!isset($_SESSION['usuario']) || !isset($_SESSION['autenticado']) || $_SESSION['autenticado'] !== true) {
+if (!isset($_SESSION['autenticado']) || $_SESSION['autenticado'] !== true) {
     header('Location: login.php');
     exit;
 }
 
+
 // Obtener información del usuario
 $usuario = $_SESSION['usuario'];
+$nombreUsuario = $_SESSION['nombre']
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -236,10 +239,10 @@ $usuario = $_SESSION['usuario'];
         
         <div class="user-info">
             <div>
-                Bienvenido, <span class="user-name"><?php echo htmlspecialchars($usuario['nombre']); ?></span>
+                Bienvenido, <span class="user-name"><?php echo $nombreUsuario; ?></span>
             </div>
             <div class="user-role">
-                <?php echo htmlspecialchars($usuario['rol']); ?>
+                <?php echo $_SESSION['rol']; ?>
             </div>
         </div>
         
