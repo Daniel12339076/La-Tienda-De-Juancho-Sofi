@@ -215,7 +215,7 @@ $usuario = $_SESSION['usuario'];
     <div class="sidebar d-flex flex-column p-3">
         <a href="#" class="menu-toggle"><i class="fas fa-bars"></i></a>
         <div class="logo-container">
-            <img src="../Image/Logo juancho.png" alt="Logo de la Empresa">
+            <img src="..\Image\Logo juancho.png" alt="Logo de la Empresa">
         </div>
         <h4 class="nav-title">Panel Admin</h4>
         <hr>
