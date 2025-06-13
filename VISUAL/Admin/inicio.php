@@ -8,7 +8,7 @@ if (!isset($_SESSION['autenticado']) || $_SESSION['autenticado'] !== true) {
 
 
 // Obtener información del usuario
-$usuario = $_SESSION['usuario'];
+// $usuario = $_SESSION['usuario'];
 $nombreUsuario = $_SESSION['nombre']
 ?>
 <!DOCTYPE html>
@@ -17,6 +17,7 @@ $nombreUsuario = $_SESSION['nombre']
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Panel de Administración</title>
+    <link rel="icon" href="../Image/Logo juancho.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
@@ -25,94 +26,7 @@ $nombreUsuario = $_SESSION['nombre']
             display: flex;
         }
 
-        /* Sidebar personalizado */
-        .sidebar {
-            width: 60px; /* Ancho inicial reducido para el icono */
-            background-color: #000; /* negro */
-            color: white;
-            overflow-x: hidden; /* Ocultar el contenido que se desborda horizontalmente */
-            transition: width 0.3s ease; /* Transición suave para el cambio de ancho */
-        }
-
-        .sidebar:hover {
-            width: 150px; /* Ancho al pasar el ratón para centrar el texto */
-        }
-
-        .sidebar .menu-toggle {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            padding: 15px;
-            text-decoration: none;
-            font-size: 1.5em;
-            cursor: pointer;
-        }
-
-        .sidebar .logo-container {
-            padding: 15px;
-            text-align: center;
-            margin-bottom: 10px;
-        }
-
-        .sidebar .logo-container img {
-            max-width: 80%;
-            height: auto;
-            border-radius: 5px;
-        }
-
-        .sidebar .nav-title {
-            color: #ffd700;
-            text-align: center;
-            margin-bottom: 10px;
-            font-size: 1em; /* Reducido el tamaño del título cuando está colapsado */
-            opacity: 0; /* Ocultar el título cuando está colapsado */
-            transition: opacity 0.3s ease;
-        }
-
-        .sidebar:hover .nav-title {
-            opacity: 1; /* Mostrar el título al pasar el ratón */
-        }
-
-        .sidebar .nav-pills {
-            margin-top: 10px;
-        }
-
-        .sidebar .nav-pills li {
-            margin-bottom: 5px;
-        }
-
-        .sidebar .nav-pills li a {
-            color: white;
-            padding: 10px;
-            display: flex;
-            align-items: center; /* Centrar verticalmente el icono y el texto */
-            justify-content: center; /* Centrar horizontalmente el contenido */
-            border-radius: 5px;
-            text-decoration: none;
-            transition: background-color 0.3s ease;
-            opacity: 0; /* Ocultar los enlaces cuando está colapsado */
-            transform: translateX(-20px); /* Mover los enlaces hacia la izquierda cuando está colapsado */
-            transition: opacity 0.3s ease 0.1s, transform 0.3s ease 0.1s; /* Añadir un pequeño retraso para la animación */
-        }
-
-        .sidebar:hover .nav-pills li a {
-            opacity: 1; /* Mostrar los enlaces al pasar el ratón */
-            transform: translateX(0); /* Mover los enlaces a su posición original */
-        }
-
-        .sidebar:hover .nav-pills li a {
-            justify-content: flex-start; /* Alinear el texto a la izquierda cuando el sidebar está expandido */
-            padding-left: 15px; /* Añadir espacio para el icono */
-        }
-
-        .sidebar .nav-pills li a i {
-            margin-right: 10px; /* Espacio entre el icono y el texto */
-        }
-
-        .sidebar .nav-pills li a:hover {
-            background-color: #ff69b4; /* rosado fuerte */
-        }
+        
 
         .content {
             flex-grow: 1;
@@ -215,24 +129,11 @@ $nombreUsuario = $_SESSION['nombre']
 </head>
 <body>
 
-    <div class="sidebar d-flex flex-column p-3">
-        <a href="#" class="menu-toggle"><i class="fas fa-bars"></i></a>
-        <div class="logo-container">
-            <img src="..\Image\Logo juancho.png" alt="Logo de la Empresa">
-        </div>
-        <h4 class="nav-title">Panel Administración</h4>
-        <hr>
-        <ul class="nav nav-pills flex-column mb-auto">
-            <li><a href="inicio.php" class="nav-link"><i class="fas fa-home"></i> Inicio</a></li>
-            <li><a href="usuario.php" class="nav-link"><i class="fas fa-users"></i> Usuarios</a></li>
-            <li><a href="Admin/categorias.php" class="nav-link"><i class="fas fa-tags"></i> Categorías</a></li>
-            <li><a href="productos.php" class="nav-link"><i class="fas fa-box"></i> Productos</a></li>
-            <li><a href="#" class="nav-link"><i class="fas fa-chart-line"></i> Ventas</a></li>
-            <li><a href="#" class="nav-link"><i class="fas fa-truck"></i> Pedidos</a></li>
-            <li><a href="#" class="nav-link"><i class="fas fa-chart-bar"></i> Reportes</a></li>
-            <li><a href="../controladores/UsuarioController.php?action=logout" class="nav-link"><i class="fas fa-sign-out-alt"></i> Salir</a></li>
-        </ul>
-    </div>
+
+   <?php 
+   include 'header.php'; // Incluye el encabezado del panel de administración
+   include 'sidebar.php'; // Incluye la barra lateral de navegación
+   ?>
 
     <div class="content">
         <h1>Panel de Administración</h1>
