@@ -202,45 +202,45 @@
       margin-top: -1px;
     }
 
-footer {
-    background-color: black;
-    color: white;
-}
+    footer {
+        background-color: black;
+        color: white;
+    }
 
-footer a {
-    color: white;
-    text-decoration: none;
-}
+    footer a {
+        color: white;
+        text-decoration: none;
+    }
 
-footer a:hover {
-    color: yellow;
-    text-decoration: underline;
-}
+    footer a:hover {
+        color: yellow;
+        text-decoration: underline;
+    }
 
-footer .btn-outline-light {
-    border-color: yellow;
-    color: yellow;
-}
+    footer .btn-outline-light {
+        border-color: yellow;
+        color: yellow;
+    }
 
-footer .btn-outline-light:hover {
-    background-color: yellow;
-    color: black;
-}
+    footer .btn-outline-light:hover {
+        background-color: yellow;
+        color: black;
+    }
 
-/* Separación entre las columnas del footer */
-footer .col-md-4 {
-    margin-bottom: 30px; /* Espacio entre las columnas */
-}
+    /* Separación entre las columnas del footer */
+    footer .col-md-4 {
+        margin-bottom: 30px; /* Espacio entre las columnas */
+    }
 
-/* Separación entre los elementos de las listas */
-footer ul li {
-    margin-bottom: 10px; /* Espacio entre los elementos de la lista */
-}
+    /* Separación entre los elementos de las listas */
+    footer ul li {
+        margin-bottom: 10px; /* Espacio entre los elementos de la lista */
+    }
 
-/* Separación entre el formulario y las redes sociales */
-footer .input-group {
-    margin-bottom: 20px; /* Espacio entre el formulario y las redes sociales */
-}
+    /* Separación entre el formulario y las redes sociales */
+    footer .input-group {
+        margin-bottom: 20px; /* Espacio entre el formulario y las redes sociales */
+    }
 
   </style>
 

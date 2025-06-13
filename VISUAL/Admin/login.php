@@ -9,6 +9,8 @@ session_start();
 	<meta name="viewport"
 		content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, maximum-scale=1.0">
 	<link rel="stylesheet" href="../css/font-awesome.min.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css">
+	<link rel="icon" href="../Image/Logo juancho.png">
 	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 	<script src="../js/jquery-3.4.1.js"></script>
 	<style>
@@ -195,7 +197,7 @@ session_start();
 	<section class="ashboard-contentPage">
 		<nav class="full-box dashboard-Navbar">
 			<div class="full-box text-center text-titles dashboard-sideBar-title">
-				<img src="Image/Logo juancho.png" alt="Logo">
+				<img src="../Image/Logo juancho.png" alt="Logo">
 				<h1>LA TIENDA DE JUANCHO & SOFI</h1>
 			</div>
 		</nav>
@@ -204,28 +206,16 @@ session_start();
 	<br>
 	<br>
 	<br>
-	<form method="POST" action="../controladores/UsuarioController.php?action=login" class="logInForm" id="formulario">
+	<form method="POST" action="../../controladores/UsuarioController.php?accion=ingresar" class="logInForm" id="formulario">
 		<p class="text-center text-muted"><i class="fa fa-user-circle fa-5x"></i></p>
-		<p class="text-center text-muted text-uppercase">Inicia sesión con tu cuenta</p>
-        
-        <?php if(isset($_SESSION['mensaje'])): ?>
-            <div class="mensaje mensaje-<?php echo $_SESSION['tipo_mensaje']; ?>">
-                <?php echo $_SESSION['mensaje']; ?>
-            </div>
-            <?php 
-            // Limpiar el mensaje después de mostrarlo
-            unset($_SESSION['mensaje']);
-            unset($_SESSION['tipo_mensaje']);
-            ?>
-        <?php endif; ?>
-        
+		<p class="text-center  text-uppercase" style="color: white;">Inicia sesión con tu cuenta</p>
 		<div class="form-group">
 			<label class="control-label" for="UserEmail">Usuario</label>
-			<input class="form-control" id="UserEmail" name="usuario" type="text">
+			<input class="form-control" id="UserEmail" name="correo" type="text" placeholder="Correo electrónico" required>
 		</div>
 		<div class="form-group">
 			<label class="control-label" for="UserPass">Contraseña</label>
-			<input class="form-control" id="UserPass" name="clave" type="password">
+			<input class="form-control" id="UserPass" name="clave" type="password" placeholder="Contraseña" required>
 		</div>
 		<div>
 			<input type="submit" value="Iniciar sesión" class="btncolor" id="btn_iniciar">
@@ -233,6 +223,7 @@ session_start();
         <a href="Registrar.php" class="registro-link">¿No tienes cuenta? Regístrate aquí</a>
 	</form>
 
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
 	<script src="../Assets/admin/vendors/jquery/dist/jquery.min.js"></script>
 </body>
 
