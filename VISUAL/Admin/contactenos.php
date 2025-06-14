@@ -1,162 +1,3 @@
-<?php
-session_start();
-
-// Incluir la conexión a la base de datos
-require_once '../../config/conexion.php';
-
-// Procesar formulario si se envía
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    try {
-        $db = new Conexion();
-        $conexion = $db->obtenerConexion();
-        
-        $accion = $_POST['accion'] ?? '';
-        $nombre = trim($_POST['nombre'] ?? '');
-        $celular = trim($_POST['celular'] ?? '');
-        
-        // Validaciones
-        if (empty($nombre) || empty($celular)) {
-            throw new Exception('Nombre y celular son obligatorios');
-        }
-        
-        if (strlen($nombre) < 2) {
-            throw new Exception('El nombre debe tener al menos 2 caracteres');
-        }
-        
-        if (!preg_match('/^[0-9]{10}$/', $celular)) {
-            throw new Exception('El celular debe tener exactamente 10 dígitos');
-        }
-        
-        if ($accion === 'crear') {
-            // Verificar si el celular ya existe
-            $stmt = $conexion->prepare("SELECT COUNT(*) as total FROM contactar WHERE celular = ?");
-            $stmt->bind_param("s", $celular);
-            $stmt->execute();
-            $resultado = $stmt->get_result();
-            $fila = $resultado->fetch_assoc();
-            
-            if ($fila['total'] > 0) {
-                throw new Exception('Ya existe un contacto con este número de celular');
-            }
-            
-            // Insertar nuevo contacto
-            $stmt = $conexion->prepare("INSERT INTO contactar (nombre, celular) VALUES (?, ?)");
-            $stmt->bind_param("ss", $nombre, $celular);
-            
-            if ($stmt->execute()) {
-                $_SESSION['mensaje'] = 'Contacto agregado exitosamente';
-                $_SESSION['tipo_mensaje'] = 'success';
-            } else {
-                throw new Exception('Error al crear contacto');
-            }
-            
-        } elseif ($accion === 'editar') {
-            $id = $_POST['id'] ?? '';
-            
-            if (empty($id)) {
-                throw new Exception('ID requerido para editar');
-            }
-            
-            // Verificar si el celular ya existe en otro contacto
-            $stmt = $conexion->prepare("SELECT COUNT(*) as total FROM contactar WHERE celular = ? AND id != ?");
-            $stmt->bind_param("si", $celular, $id);
-            $stmt->execute();
-            $resultado = $stmt->get_result();
-            $fila = $resultado->fetch_assoc();
-            
-            if ($fila['total'] > 0) {
-                throw new Exception('Ya existe otro contacto con este número de celular');
-            }
-            
-            // Actualizar contacto
-            $stmt = $conexion->prepare("UPDATE contactar SET nombre = ?, celular = ? WHERE id = ?");
-            $stmt->bind_param("ssi", $nombre, $celular, $id);
-            
-            if ($stmt->execute()) {
-                $_SESSION['mensaje'] = 'Contacto actualizado exitosamente';
-                $_SESSION['tipo_mensaje'] = 'success';
-            } else {
-                throw new Exception('Error al actualizar contacto');
-            }
-        }
-        
-        $conexion->close();
-        
-    } catch (Exception $e) {
-        $_SESSION['mensaje'] = $e->getMessage();
-        $_SESSION['tipo_mensaje'] = 'error';
-    }
-    
-    // Redireccionar para evitar reenvío del formulario
-    header('Location: contactenos.php');
-    exit;
-}
-
-// Procesar eliminación
-if (isset($_GET['eliminar'])) {
-    try {
-        $id = $_GET['eliminar'];
-        
-        $db = new Conexion();
-        $conexion = $db->obtenerConexion();
-        
-        $stmt = $conexion->prepare("DELETE FROM contactar WHERE id = ?");
-        $stmt->bind_param("i", $id);
-        
-        if ($stmt->execute()) {
-            $_SESSION['mensaje'] = 'Contacto eliminado exitosamente';
-            $_SESSION['tipo_mensaje'] = 'success';
-        } else {
-            $_SESSION['mensaje'] = 'Error al eliminar contacto';
-            $_SESSION['tipo_mensaje'] = 'error';
-        }
-        
-        $conexion->close();
-        
-    } catch (Exception $e) {
-        $_SESSION['mensaje'] = 'Error al eliminar: ' . $e->getMessage();
-        $_SESSION['tipo_mensaje'] = 'error';
-    }
-    
-    header('Location: contactenos.php');
-    exit;
-}
-
-// Obtener contactos de la base de datos
-$contactos = [];
-try {
-    $db = new Conexion();
-    $conexion = $db->obtenerConexion();
-    
-    $resultado = $conexion->query("SELECT id, nombre, celular, fecha_registro FROM contactar ORDER BY fecha_registro DESC");
-    
-    if ($resultado && $resultado->num_rows > 0) {
-        while ($fila = $resultado->fetch_assoc()) {
-            $contactos[] = $fila;
-        }
-    }
-    
-    $conexion->close();
-    
-} catch (Exception $e) {
-    $_SESSION['mensaje'] = 'Error al cargar contactos: ' . $e->getMessage();
-    $_SESSION['tipo_mensaje'] = 'error';
-}
-
-// Verificar si estamos editando
-$editando = false;
-$contactoEditar = null;
-if (isset($_GET['editar'])) {
-    $idEditar = $_GET['editar'];
-    foreach ($contactos as $contacto) {
-        if ($contacto['id'] == $idEditar) {
-            $editando = true;
-            $contactoEditar = $contacto;
-            break;
-        }
-    }
-}
-?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -826,48 +667,31 @@ if (isset($_GET['editar'])) {
         <div class="content-header">
             <h2><i class="fas fa-envelope"></i> Gestión de Contactos</h2>
         </div>
-        
-        <?php if(isset($_SESSION['mensaje'])): ?>
-            <div class="mensaje mensaje-<?php echo $_SESSION['tipo_mensaje']; ?>">
-                <?php echo $_SESSION['mensaje']; ?>
-            </div>
-            <?php 
-            // Limpiar el mensaje después de mostrarlo
-            unset($_SESSION['mensaje']);
-            unset($_SESSION['tipo_mensaje']);
-            ?>
-        <?php endif; ?>
-        
         <div class="contact-container">
             <div class="form-section">
                 <h2><i class="fas fa-user-plus"></i> <?php echo $editando ? 'Editar Contacto' : 'Nuevo Contacto'; ?></h2>
                 <form method="POST" action="">
-                    <?php if ($editando): ?>
-                        <input type="hidden" name="accion" value="editar">
-                        <input type="hidden" name="id" value="<?php echo $contactoEditar['id']; ?>">
-                    <?php else: ?>
-                        <input type="hidden" name="accion" value="crear">
-                    <?php endif; ?>
+                    
                     
                     <div class="form-group">
                         <label for="nombre">Nombre</label>
                         <input type="text" id="nombre" name="nombre" required 
-                               value="<?php echo $editando ? htmlspecialchars($contactoEditar['nombre']) : ''; ?>">
+                               value="">
                     </div>
                     <div class="form-group">
                         <label for="celular">Celular</label>
                         <input type="text" id="celular" name="celular" required maxlength="10" pattern="[0-9]{10}"
-                               value="<?php echo $editando ? htmlspecialchars($contactoEditar['celular']) : ''; ?>">
+                               value=" ">
                     </div>
                     <button type="submit" class="btn-guardar">
-                        <i class="fas fa-save"></i> <?php echo $editando ? 'ACTUALIZAR' : 'GUARDAR'; ?>
+                        <i class="fas fa-save">hola</i>
                     </button>
                     
-                    <?php if ($editando): ?>
+                    
                         <a href="contactenos.php" class="btn-cancelar">
                             <i class="fas fa-times"></i> CANCELAR
                         </a>
-                    <?php endif; ?>
+                    
                 </form>
             </div>
             <div class="table-section">
@@ -883,30 +707,24 @@ if (isset($_GET['editar'])) {
                         </tr>
                     </thead>
                     <tbody>
-                        <?php if (empty($contactos)): ?>
+
                             <tr>
                                 <td colspan="5" style="text-align: center;">No hay contactos registrados</td>
                             </tr>
-                        <?php else: ?>
-                            <?php foreach ($contactos as $contacto): ?>
+
+                           
                                 <tr>
-                                    <td><?php echo $contacto['id']; ?></td>
-                                    <td><?php echo htmlspecialchars($contacto['nombre']); ?></td>
-                                    <td><?php echo htmlspecialchars($contacto['celular']); ?></td>
+                                    <td>id</td>
+                                    <td>nombre</td>
+                                    <td>celula</td>
                                     <td>
-                                        <a href="contactenos.php?editar=<?php echo $contacto['id']; ?>" class="btn-editar">
+                                        <a href="" class="btn-editar">
                                             <i class="fas fa-edit"></i>
                                         </a>
                                     </td>
                                     <td>
-                                        <a href="contactenos.php?eliminar=<?php echo $contacto['id']; ?>" class="btn-eliminar"
-                                           onclick="return confirm('¿Está seguro de que desea eliminar este contacto?')">
-                                            <i class="fas fa-trash-alt"></i>
-                                        </a>
-                                    </td>
+                                       
                                 </tr>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>
@@ -914,16 +732,7 @@ if (isset($_GET['editar'])) {
     </div>
 
     <script>
-        // Validación en tiempo real del celular
-        document.getElementById('celular').addEventListener('input', function(e) {
-            // Solo permitir números
-            e.target.value = e.target.value.replace(/[^0-9]/g, '');
-            
-            // Limitar a 10 dígitos
-            if (e.target.value.length > 10) {
-                e.target.value = e.target.value.slice(0, 10);
-            }
-        });
+       
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
