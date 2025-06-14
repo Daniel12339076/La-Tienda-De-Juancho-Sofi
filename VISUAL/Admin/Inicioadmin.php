@@ -7,6 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="fontawesome-free-6.7.2-web/css/all.min.css">
+    <link rel="icon" href="../Image/Logo juancho.png">
     <title>Panel de Administración - Juancho & Sofi</title>
     <style>
         body {
@@ -38,6 +39,7 @@
         }
 
         .sidebar a.active {
+<<<<<<< HEAD:VISUAL/Admin/Inicioadmin.html
     color: #000; /* Texto negro */
     text-decoration: none;
     width: 150%; /* Ocupa todo el ancho de la barra lateral */
@@ -47,23 +49,34 @@
     position: relative; /* hola soy daniel Necesario para el pseudo-elemento */
     margin: 0; /* Elimina márgenes */
 }
+=======
+            color: #000; /* Texto negro */
+            text-decoration: none;
+            width: 150%; /* Ocupa todo el ancho de la barra lateral */
+            padding: 15px 10px; /* Espaciado interno */
+            font-weight: bold;
+            text-align: center; /* Centra el texto */
+            position: relative; /* Necesario para el pseudo-elemento */
+            margin: 0; /* Elimina márgenes */
+        }
+>>>>>>> 17e7b9f593bf51ce8c8699cdf2954dc15574db10:VISUAL/Admin/Inicioadmin.php
 
 
-.sidebar a.active { /* Aplica estilos al pasar el mouse o cuando está activo */
-    background-color: #fd00db; /* Fondo oscuro */
-    color: #fff; /* Texto blanco */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Sombra */
-}
+        .sidebar a.active { /* Aplica estilos al pasar el mouse o cuando está activo */
+            background-color: #fd00db; /* Fondo oscuro */
+            color: #fff; /* Texto blanco */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Sombra */
+        }
 
-.sidebar a.active::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 5px; /* Ancho de la barra de color */
-    background-color: #00ffcc; /* Color de la barra */
-}
+        .sidebar a.active::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 5px; /* Ancho de la barra de color */
+            background-color: #00ffcc; /* Color de la barra */
+        }
         .content {
 
             margin-left: 270px;
@@ -84,33 +97,10 @@
     </style>
 </head>
     <body>
-        <div class="sidebar d-flex flex-column justify-content-center align-items-center">
-            <br>
-            <br>
-            <br>
-            <br>
-            <br>
-            <br>
-            <img src="Image/Logo juancho.png" alt="Logo Juancho & Sofi" width="150px" class="mb-3" text-center>
-            <div class="perfil_info d-flex align-items-center">
-                <img src="Image/avatar (1).png" alt="Perfil" class="rounded-circle me-2" width="60px">
-                <div>
-                <p class="mb-0">Bienvenido(a),</p>
-                </div>
-            </div>
-            <br>
-            <a href="#" class="active">INICIO</a>
-            <a href="Usuarioadmin.html">USUARIOS</a>
-            <a href="#">CATEGORÍAS</a>
-            <a href="#">PRODUCTOS</a>
-            <a href="#">VENTAS</a>
-            <a href="#">PEDIDOS</a>
-            <a href="#">REPORTES</a>
-            <a href="#">CONTACTOS</a>
-            <div class="logout mt-4">
-                <a href="#" class="text-danger fw-bold">SALIR</a>
-            </div>
-        </div>
+        <?php 
+        include 'sidebar.php';
+        include  'header.php'; 
+        ?>
         
         <div class="content">
             <h1>Panel de Administración</h1>

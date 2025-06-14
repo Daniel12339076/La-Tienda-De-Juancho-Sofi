@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Gestión de Categorías - Panel de Administración</title>
+    <link rel="icon" href="../Image/Logo juancho.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
@@ -13,105 +14,7 @@
             font-family: sans-serif;
             background-color: #f8f9fa;
         }
-
-        .sidebar {
-            width: 60px;
-            background-color: #000;
-            color: white;
-            overflow-x: hidden;
-            transition: width 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .sidebar:hover {
-            width: 150px;
-            align-items: flex-start;
-        }
-
-        .sidebar .menu-toggle {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            padding: 15px;
-            text-decoration: none;
-            font-size: 1.5em;
-            cursor: pointer;
-            width: 100%;
-        }
-
-        .sidebar .logo-container {
-            padding: 15px;
-            text-align: center;
-            margin-bottom: 10px;
-            width: 100%;
-        }
-
-        .sidebar:not(:hover) .logo-container {
-            display: flex;
-            justify-content: center;
-        }
-
-        .sidebar .logo-container img {
-            max-width: 80%;
-            height: auto;
-            border-radius: 5px;
-        }
-
-        .sidebar .nav-title {
-            color: #ffd700;
-            text-align: center;
-            margin-bottom: 10px;
-            font-size: 1em;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            width: 100%;
-        }
-
-        .sidebar:hover .nav-title {
-            opacity: 1;
-        }
-
-        .sidebar .nav-pills {
-            margin-top: 10px;
-            width: 100%;
-        }
-
-        .sidebar .nav-pills li {
-            margin-bottom: 5px;
-        }
-
-        .sidebar .nav-pills li a {
-            color: white;
-            padding: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 5px;
-            text-decoration: none;
-            transition: background-color 0.3s ease;
-            opacity: 0;
-            transform: translateX(-20px);
-            transition: opacity 0.3s ease 0.1s, transform 0.3s ease 0.1s;
-        }
-
-        .sidebar:hover .nav-pills li a {
-            opacity: 1;
-            transform: translateX(0);
-            justify-content: flex-start;
-            padding-left: 15px;
-        }
-
-        .sidebar .nav-pills li a i {
-            margin-right: 10px;
-        }
-
-        .sidebar .nav-pills li a:hover {
-            background-color: #ff69b4;
-        }
-
+        
         .content-wrapper {
             flex-grow: 1;
             padding: 20px;
@@ -348,24 +251,10 @@
     </style>
 </head>
 <body>
-    <div class="sidebar d-flex flex-column p-3">
-        <a href="#" class="menu-toggle"><i class="fas fa-bars"></i></a>
-        <div class="logo-container">
-            <img src="logo.png" alt="Logo de la Empresa">
-        </div>
-        <h4 class="nav-title">Panel Admin</h4>
-        <hr>
-        <ul class="nav nav-pills flex-column mb-auto">
-            <li><a href="./inicio.html" class="nav-link"><i class="fas fa-home"></i> Inicio</a></li>
-            <li><a href="./usuario.html" class="nav-link"><i class="fas fa-users"></i> Usuarios</a></li>
-            <li><a href="categorias.php" class="nav-link active"><i class="fas fa-tags"></i> Categorías</a></li>
-            <li><a href="#" class="nav-link"><i class="fas fa-box"></i> Productos</a></li>
-            <li><a href="#" class="nav-link"><i class="fas fa-chart-line"></i> Ventas</a></li>
-            <li><a href="#" class="nav-link"><i class="fas fa-truck"></i> Pedidos</a></li>
-            <li><a href="#" class="nav-link"><i class="fas fa-chart-bar"></i> Reportes</a></li>
-            <li><a href="#" class="nav-link"><i class="fas fa-sign-out-alt"></i> Salir</a></li>
-        </ul>
-    </div>
+   <?php 
+   include 'sidebar.php';
+   include  'header.php'; 
+   ?>
 
     <div class="content-wrapper">
         <div class="content-header">

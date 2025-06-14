@@ -6,6 +6,7 @@ session_start();
 <head>
     <meta charset="UTF-8">
     <title>Registro - La Tienda de Juancho & Sofi</title>
+    <link rel="icon" href="../Image/Logo juancho.png">
     <style>
         body {
             background: #000;
