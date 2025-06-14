@@ -157,7 +157,7 @@ ALTER TABLE `usuarios`
   ADD UNIQUE KEY `correo` (`correo`);
 
 --
--- Indices de la tabla `ventas`
+-- Indices de la tabla `ventas tienda juancho`
 --
 ALTER TABLE `ventas`
   ADD PRIMARY KEY (`id`),
