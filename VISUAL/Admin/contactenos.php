@@ -669,7 +669,7 @@
         </div>
         <div class="contact-container">
             <div class="form-section">
-                <h2><i class="fas fa-user-plus"></i> <?php echo $editando ? 'Editar Contacto' : 'Nuevo Contacto'; ?></h2>
+                <h2><i class="fas fa-user-plus"></i> </h2>
                 <form method="POST" action="">
                     
                     
@@ -684,12 +684,12 @@
                                value=" ">
                     </div>
                     <button type="submit" class="btn-guardar">
-                        <i class="fas fa-save">hola</i>
+                        <i class="fas fa-save"></i>
                     </button>
                     
                     
                         <a href="contactenos.php" class="btn-cancelar">
-                            <i class="fas fa-times"></i> CANCELAR
+                            <i class="fas fa-times"></i> 
                         </a>
                     
                 </form>
