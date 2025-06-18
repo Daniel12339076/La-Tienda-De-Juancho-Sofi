@@ -266,7 +266,7 @@
                 
                 <div id="mensaje" class="alert" style="display: none;"></div>
                 
-                <form id="formCategoria" enctype="multipart/form-data">
+                <form id="formCategoria" action="../../controladores/CategoriaController.php?accion=registrar" method="POST" enctype="multipart/form-data">
                     <div class="form-group">
                         <label for="nombre">Nombre</label>
                         <input type="text" id="nombre" name="nombre" required>
