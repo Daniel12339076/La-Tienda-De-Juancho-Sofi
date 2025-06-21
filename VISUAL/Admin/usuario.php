@@ -1,3 +1,10 @@
+<?php
+session_start();
+    if (!isset($_SESSION['autenticado']) || $_SESSION['autenticado'] !== true) {
+        header('Location: login.php');
+        exit;
+    } 
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -173,6 +180,9 @@
     <?php 
         include 'sidebar.php';
         include  'header.php'; 
+        include '../../config/conexion.php';
+        include '../../modelos/UsuarioModel.php';
+        $usuarios = obtenerUsuarios($conn);
    ?>
 
     <div class="content-wrapper">
@@ -182,31 +192,33 @@
         <div class="user-management-container">
             <div class="form-section">
                 <h2><i class="fas fa-user-plus"></i> Nuevo Usuario</h2>
-                <form>
+                <form method="POST" action="../../controladores/UsuarioController.php?accion=registrar" id="user-form">
                     <div class="form-group">
                         <label for="nombre">Nombre</label>
-                        <input type="text" id="nombre" name="nombre">
+                        <input type="text" id="nombre" name="usuario" placeholder="Nombre del Usuario" required>
                     </div>
                     <div class="form-group">
                         <label for="correo">Correo</label>
-                        <input type="email" id="correo" name="correo">
+                        <input type="email" id="correo" name="correo" placeholder="Ej:usuario@dominio.com" required>
                     </div>
                     <div class="form-group">
                         <label for="celular">Celular</label>
-                        <input type="text" id="celular">
+                        <input type="text" id="celular" name="celular" placeholder="Número de Celular" required>
                     </div>
                     <div class="form-group">
                         <label for="clave">Clave</label>
-                        <input type="password" id="clave">
+                        <input type="password" id="clave" name="clave" placeholder="Clave de Usuario" required>
                     </div>
                     <div class="form-group">
                         <label for="rol">Rol</label>
-                        <select class="form-select" id="rol">
+                        <select class="form-select" id="rol" name="rol" required>
+                            <option value="" disabled selected>Seleccione un rol...</option>
                             <option value="empleado">Empleado</option>
                             <option value="administrador">Administrador</option>
+                            <option value="vendedor">Vendedor</option>
                         </select>
                     </div>
-                    <button type="button" class="btn-guardar"><i class="fas fa-save"></i> GUARDAR</button>
+                    <button type="submit" class="btn-guardar"><i class="fas fa-save"></i> GUARDAR</button>
                 </form>
                 <div id="form-message"></div>
             </div>
@@ -223,22 +235,78 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>Valeri</td>
-                            <td>valeri@gmail.com</td>
-                            <td>2146483647</td>
-                            <td>administrador</td>
-                            <td><button class="btn-editar"><i class="fas fa-edit"></i></button></td>
-                            <td><button class="btn-eliminar"><i class="fas fa-trash-alt"></i></button></td>
-                        </tr>
-                        <tr>
-                            <td>Juan</td>
-                            <td>juan@gmail.com</td>
-                            <td>2147483647</td>
-                            <td>empleado</td>
-                            <td><button class="btn-editar"><i class="fas fa-edit"></i></button></td>
-                            <td><button class="btn-eliminar"><i class="fas fa-trash-alt"></i></button></td>
-                        </tr>
+                        <?php foreach ($usuarios as $usuario): ?>
+                            <tr>
+                                <td><?php echo htmlspecialchars($usuario['nombre']); ?></td>
+                                <td><?php echo htmlspecialchars($usuario['correo']); ?></td>
+                                <td><?php echo htmlspecialchars($usuario['celular']); ?></td>
+                                <td><?php echo htmlspecialchars($usuario['rol']); ?></td>
+                            <td>
+                                    <button class="btn-opciones btn-editar" data-bs-toggle="modal" data-bs-target="#modalEditar<?= $usuario['id'] ?>">
+                                        <i class="fas fa-edit"></i> Editar
+                                    </button>
+                                </td>
+                                <td>
+                                    <button class="btn-opciones btn-eliminar" onclick="eliminar(event, <?= $usuario['id'] ?>)">
+                                        <i class="fas fa-trash-alt"></i> Eliminar
+                                    </button>
+                                </td>
+                            </tr>
+                            <!--Modal editar Usuario -->
+                            <div class="modal fade" id="modalEditar<?= $usuario['id'] ?>" tabindex="-1" aria-labelledby="modalEditarLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                <div class="modal-header bg-primary text-white">
+                                    <h5 class="modal-title" id="modalEditarLabel">Editar Usuario</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="../../controladores/UsuarioController.php?accion=actualizar" method="POST">
+                                    <input type="hidden" name="id" value="<?= $usuario['id'] ?>" />
+                                    <!-- <div class="mb-3">
+                                        <label for="contacto1usuarios" class="form-label">Imagen</label>
+                                        <input type="file" id="imagen" name="imagen" accept="image/*" class="form-control" />
+                                    </div> -->
+                                    <div class="mb-3">
+                                        <label for="nombreusuarios" class="form-label">Nombre</label>
+                                        <input type="text" class="form-control" name="usuario"  value="<?= $usuario['nombre'] ?>" />
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="correousuarios" class="form-label">Correo</label>
+                                        <input type="email" class="form-control" name="correo"  value="<?= $usuario['correo'] ?>" />
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="rolusuario<?= $usuario['id'] ?>" class="form-label">Rol</label>
+                                        <select class="form-select" name="rol" id="rolusuario<?= $usuario['id'] ?>">
+                                        <option value="administrador" <?= $usuario['rol'] == "ADMIN" ? 'selected' : '' ?>>Administrador</option>
+                                        <option value="empleado" <?= $usuario['rol'] == "empleado" ? 'selected' : '' ?>>Empleado</option>
+                                        <option value="vendedor" <?= $usuario['rol'] == "vendedor" ? 'selected' : '' ?>>Vendedor</option>
+                                        <option value="cliente" <?= $usuario['rol'] == "cliente" ? 'selected' : '' ?>>Cliente</option>
+                                        </select>
+                                    </div>
+
+
+                                    <div class="mb-3">
+                                        <label for="contacto1usuarios" class="form-label">celular</label>
+                                        <input type="number" class="form-control" name="celular"  value="<?= $usuario['celular'] ?>" />
+                                    </div>
+                                    
+                                    <div class="modal-footer">
+                                        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                        <button type="submit" class="btn btn-dark">Guardar</button>
+                                    </div>
+                                    
+                                    </form>
+                                </div>
+                                
+                                </div>
+                            
+                            </div>
+
+                            </div>
+                        <?php endforeach; ?>
                     </tbody>
                 </table>
             </div>
@@ -247,6 +315,20 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js">
         
+    </script>
+    <script>
+
+        async function eliminar(event, id) {
+            event.preventDefault();
+            const confirmarSalida = await confirmar(
+                '¿Estás seguro de que deseas eliminar a este USUARIO?',
+                'SÍ', 'No', 'warning'
+            );
+
+            if (confirmarSalida) {
+                window.location.href = `../../controladores/UsuarioController.php?accion=eliminar&id=${id}`;
+            }
+        }
     </script>
 </body>
 </html>

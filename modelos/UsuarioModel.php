@@ -92,7 +92,6 @@ function registrar($conn, $data) {
         $_SESSION['usuario'] = $data['usuario'];
         $_SESSION['correo'] = $data['correo'];
         $_SESSION['celular'] = $data['celular'];
-        $_SESSION['rol'] = $data['rol'];
         
         echo "
         <script src='../libs/SweetAlert2/sweetalert2.all.min.js'></script>
@@ -115,7 +114,7 @@ function registrar($conn, $data) {
                 <script src='../VISUAL/alertas/funcionesalert.js'></script>
                 <body>
                         <script>
-                            informar('El Correo o el Número de Documento ya está registrado. Por favor, verifica los datos ingresados.','REINTENTAR.', '../VISUAL/admin/login.php', 'error');
+                            informar('El Correo ya está registrado. Por favor, verifica los datos ingresados.','REINTENTAR.', '../VISUAL/admin/login.php', 'error');
                         </script>
                 </body>";
         } else {
@@ -129,29 +128,26 @@ function registrar($conn, $data) {
 
 
 function obtenerusuarios($conn) {
-    $result = mysqli_query($conn, "SELECT * FROM usuarios");
+    $result = mysqli_query($conn, "SELECT * FROM usuarios ORDER BY rol ASC, id DESC");
     return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
 
 function eliminar($conn, $id) {
    
     mysqli_query($conn, "DELETE FROM usuarios WHERE id=$id");
-    header("Location: ../VISUAL/admin/login.php");
+    header("Location: ../VISUAL/Admin/usuario.php");
 }
 
 function actualizar($conn, $data) {
     $sql = "UPDATE usuarios SET 
-        usuario = '{$data['usuario']}',
-        tipo_documento = '{$data['tipo_documento']}',
-        numero_documento = '{$data['numero_documento']}',
-        fecha_nacimiento = '{$data['fecha_nacimiento']}',
+        nombre = '{$data['usuario']}',
         correo = '{$data['correo']}',
         celular = '{$data['celular']}',
         rol = '{$data['rol']}'
         WHERE id = {$data['id']}";
 
     mysqli_query($conn, $sql);
-    header("Location: ../VISUAL/admin/login.php");
+    header("Location: ../VISUAL/Admin/usuario.php");
 }
 
 

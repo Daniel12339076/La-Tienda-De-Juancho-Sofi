@@ -147,13 +147,10 @@ session_start();
 
             <label for="celular">Número de celular</label>
             <input type="tel" id="celular" name="celular" placeholder="Ej: +57 300 123 4567" required>
-
+            
             <label for="rol">Rol</label>
             <select id="rol" name="rol" required>
-                <option value="">Selecciona un rol</option>
                 <option value="cliente">Cliente</option>
-                <option value="vendedor">Vendedor</option>
-                <option value="administrador">Administrador</option>
             </select>
 
             <label for="contrasena">Contraseña</label>

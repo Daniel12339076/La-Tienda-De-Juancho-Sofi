@@ -26,9 +26,19 @@
             <li class=""><a href="pedidos.php" class="nav-link i-pedidos"><i class="fas fa-truck "></i> Pedidos</a></li>
             <li class=""><a href="reportes.php" class="nav-link i-reportes"><i class="fas fa-chart-bar "></i> Reportes</a></li>
             <hr>
-            <li class=""><a href="../../controladores/UsuarioController.php?accion=salir" class="nav-link"><i class="fas fa-sign-out-alt"></i> Salir</a></li>
+            <li class=""><a onclick="salir();" class="nav-link"><i class="fas fa-sign-out-alt"></i> Salir</a></li>
         </ul>
     </div>
+    <script>
+        async function salir() {
+        event.preventDefault();
+        const confirmarSalida = await confirmar('¿Estás seguro de que deseas cerrar sesión?','Si, Salir', 'No, cancelar', 'question');
+        if (confirmarSalida) {
+            window.location.href =  '../../controladores/UsuarioController.php?accion=salir';
+        }
+        }
+
+  </script>
     <script src='../../libs/SweetAlert2/sweetalert2.all.min.js'></script>
     <script src='../alertas/funcionesalert.js'></script>
 </body>
