@@ -1,49 +1,36 @@
 <?php
 
 function registrar($conn, $data) {
-    $sql = "INSERT INTO categorias VALUES (?, ?, ?)";
+    $sql = "INSERT INTO categorias (nombre, descripcion, imagen) VALUES (?, ?, ?)";
 
     $stmt = $conn->prepare($sql);
     if (!$stmt) {
         die("Error al preparar la consulta: " . $conn->error);
     }
 
-    $stmt->bind_param("sss", $data['nombre'], $data['descripcion'], "hgjhkjk");
+    $nombre = $data['nombre'];
+    $descripcion = $data['descripcion'];
+    $imagen = $data['imagen'];
 
-    try {
-        if ($stmt->execute()) {
-            $_SESSION['nombre'] = $data['nombre'];
-            $_SESSION['descripcion'] = $data['descripcion'];
+    $stmt->bind_param("sss", $nombre, $descripcion, $imagen);
 
-            
-            echo "
-                <script src='../SweetAlert2/sweetalert2.all.min.js'></script>
-                <script src='../VISUAL/alertas/funcionesalert.js'></script>
-                <body>
-                        <script>
-                            informar('CATEGORÍA REGISTRADA EXITÓSAMENTE.','Ok.', '../VISUAL/admin/categorias.php', 'success');
-                        </script>
-                </body>";
-                exit();
-        }
-    } catch (mysqli_sql_exception $e) {
-        if ($e->getCode() === 1062) {
-                echo "
-                <script src='../SweetAlert2/sweetalert2.all.min.js'></script>
-                <script src='../VISUAL/alertas/funcionesalert.js'></script>
-                <body>
-                        <script>
-                            informar('El nombre de la categoría ya está registrado.','Reintentar.', '../VISUAL/admin/categorias.php', 'error');
-                        </script>
-                </body>";
-                exit();
-        } else {
-            die("Error al registrar categoría: " . $e->getMessage());
-        }
+    if ($stmt->execute()) {
+        $_SESSION['nombre'] = $nombre;
+
+        echo "
+        <script src='../libs/SweetAlert2/sweetalert2.all.min.js'></script>
+        <script src='../VISUAL/alertas/funcionesalert.js'></script>
+        <body>
+                <script>
+                    informar('CATEGORÍA REGISTRADA EXITÓSAMENTE.','Ok.', '../VISUAL/admin/categorias.php', 'success');
+                </script>
+        </body>";
+        exit();
+    } else {
+        die("Error al ejecutar la consulta: " . $stmt->error);
     }
-
-    $stmt->close();
 }
+
 
 function obtenerCategorias($conn) {
     $result = mysqli_query($conn, "SELECT * FROM categorias");
@@ -58,10 +45,11 @@ function eliminar($conn, $id) {
 function actualizar($conn, $data) {
     $sql = "UPDATE categorias SET 
         nombre = '{$data['nombre']}',
-        descripcion = '{$data['descripcion']}'
+        descripcion = '{$data['descripcion']}',
+        imagen = '{$data['imagen']}'
         WHERE id = {$data['id']}";
 
-    mysqli_query($conn, $sql);
-    header("Location: ../VISUAL/admin/categorias.php");
+    mysqli_query($conn, $sql) or die("Error al actualizar la categoría: " . mysqli_error($conn));
+    header("Location: ../VISUAL/Admin/categorias.php");
 }
 ?>

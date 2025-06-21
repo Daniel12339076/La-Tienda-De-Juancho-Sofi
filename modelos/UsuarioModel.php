@@ -1,17 +1,8 @@
 <?php
 function login($conn, $data) {
-    if (session_status() !== PHP_SESSION_ACTIVE) {
-        session_start();
-    }
-
-    // Validar claves en $data
-    $correo = $data['correo'] ?? null;
-    $clave = $data['clave'] ?? null;
-
-    if (!$correo || !$clave) {
-        echo alertMessage('DATOS INSUFICIENTES', 'REINTENTAR', '../VISUAL/Admin/login.php', 'warning');
-        exit();
-    }
+    session_start();
+    $correo = $data['correo'];
+    $clave = $data['clave'];
 
     $stmt = $conn->prepare("SELECT * FROM usuarios WHERE correo = ?");
     $stmt->bind_param("s", $correo);
@@ -52,8 +43,8 @@ function login($conn, $data) {
 
 function alertMessage($titulo, $boton, $redireccion, $icono) {
     return "
-        <script src='../Assets/SweetAlert2/sweetalert2.all.min.js'></script>
-        <script src='../js/funcionesalert.js'></script>
+        <script src='../libs/SweetAlert2/sweetalert2.all.min.js'></script>
+        <script src='../VISUAL/alertas/funcionesalert.js'></script>
         <body>
             <script>
                 informar('" . addslashes($titulo) . "', '" . addslashes($boton) . "', '" . $redireccion . "', '" . $icono . "');
@@ -104,8 +95,8 @@ function registrar($conn, $data) {
         $_SESSION['rol'] = $data['rol'];
         
         echo "
-        <script src='../Assets/SweetAlert2/sweetalert2.all.min.js'></script>
-        <script src='../js/funcionesalert.js'></script>
+        <script src='../libs/SweetAlert2/sweetalert2.all.min.js'></script>
+        <script src='../VISUAL/alertas/funcionesalert.js'></script>
         <body>
                 <script>
                     informar('CLIENTE REGISTRADO EXITÓSAMENTE.','Ok.', '../VISUAL/admin/login.php', 'success');
@@ -120,8 +111,8 @@ function registrar($conn, $data) {
             // die("Error: Ya existe un registro con este número de documento o correo electrónico.");
             
             echo "
-                <script src='../Assets/SweetAlert2/sweetalert2.all.min.js'></script>
-                <script src='../js/funcionesalert.js'></script>
+                <script src='../libs/SweetAlert2/sweetalert2.all.min.js'></script>
+                <script src='../VISUAL/alertas/funcionesalert.js'></script>
                 <body>
                         <script>
                             informar('El Correo o el Número de Documento ya está registrado. Por favor, verifica los datos ingresados.','REINTENTAR.', '../VISUAL/admin/login.php', 'error');

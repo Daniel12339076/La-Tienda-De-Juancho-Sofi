@@ -1,3 +1,10 @@
+<?php
+session_start();
+    if (!isset($_SESSION['autenticado']) || $_SESSION['autenticado'] !== true) {
+        header('Location: login.php');
+        exit;
+    } 
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -80,6 +87,13 @@
             box-sizing: border-box;
         }
 
+        #td-descripcion{
+            width: calc(100% - 12px);
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
         .form-group input[type="file"] {
             width: 100%;
         }
@@ -252,9 +266,14 @@
 </head>
 <body>
    <?php 
+    
    include 'sidebar.php';
    include  'header.php'; 
+   include '../../config/conexion.php';
+    include '../../modelos/CategoriaModel.php';
+   $categorias = obtenerCategorias($conn);
    ?>
+   
 
     <div class="content-wrapper">
         <div class="content-header">
@@ -290,31 +309,106 @@
             <div class="category-table-section">
                 <div class="dataTables_wrapper">
                     <div class="dataTables_filter">
-                        <label>Buscar:<input type="search" id="buscar" placeholder="" aria-controls="categoryTable"></label>
+                        <input type="search" id="buscar" class="form-control form-control-sm" placeholder="Buscar categoría...">
+
                     </div>
                     <br>
-                    <div class="dataTables_length">
+                    <!-- <div class="dataTables_length">
                         <label>Mostrar <select id="entriesPorPagina" aria-controls="categoryTable"><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select> entradas</label>
-                    </div>
+                    </div> -->
                     <table id="categoryTable" class="category-table">
                         <thead>
                             <tr>
                                 <th>Nombre</th>
                                 <th>Descripción</th>
-                                <th>Imagen</th>
                                 <th>Opciones</th>
                             </tr>
                         </thead>
                         <tbody id="tablaCategorias">
                             <!-- Las categorías se cargarán aquí dinámicamente -->
+                            <?php foreach ($categorias as $categoria): ?>
+                                <tr>
+                                    <td><?php echo htmlspecialchars($categoria['nombre']); ?></td>
+                                    <td><textarea readonly name="descripcion" rows="1" ><?php echo htmlspecialchars($categoria['descripcion']); ?></textarea></td>
+
+                                    <td>
+                                        <button class="btn-opciones btn-editar" data-bs-toggle="modal" data-bs-target="#modalEditar<?= $categoria['id'] ?>">
+                                            <i class="fas fa-edit"></i> Editar
+                                        </button>
+                                        <button class="btn-opciones btn-eliminar" onclick="eliminarCategoria(<?php echo $categoria['id']; ?>)">
+                                            <i class="fas fa-trash-alt"></i> Eliminar
+                                        </button>
+                                    </td>
+                                </tr>
+                                <!-- Modal de edición -->
+                                <div class="modal fade" id="modalEditar<?= $categoria['id'] ?>" tabindex="-1"
+                                    aria-labelledby="modalEditarLabel<?= $categoria['id'] ?>" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header bg-secondary text-white">
+                                                <h5 class="modal-title">Editar
+                                                    categoria</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Cerrar"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form action="../../controladores/CategoriaController.php?accion=actualizar" enctype="multipart/form-data" method="POST">
+                                                    <input type="hidden" name="id" value="<?= $categoria['id'] ?>" />
+                                                    <div class="mb-3">
+                                                        <label for="nombrecategoria<?= $categoria['id'] ?>"
+                                                            class="form-label">Nombre</label>
+                                                        <input type="text" class="form-control"
+                                                            name="nombre" id="nombrecategoria<?= $categoria['id'] ?>"
+                                                            value="<?= $categoria['nombre'] ?>" />
+                                                    </div>
+                                                   
+                                                    <div class="mb-3">
+                                                        <label for="imagencategoria<?= $categoria['id'] ?>" class="form-label">Imagen</label>
+                                                        <input type="file"
+                                                            id="imagencategoria<?= $categoria['id'] ?>"
+                                                            name="imagen"
+                                                            accept="image/*"
+                                                            class="form-control"
+                                                            onchange="mostrarNombreArchivo(this)" />
+                                                        
+                                                        <!-- Mostrar el nombre del archivo actual -->
+                                                        <div class="form-text text-success mt-1">
+                                                            Archivo actual: <?= htmlspecialchars($categoria['imagen']) ?>
+                                                        </div>
+                                                       
+
+                                                        <!-- Aquí se mostrará el nuevo archivo seleccionado -->
+                                                        <div id="nombreArchivo<?= $categoria['id'] ?>" class="form-text mt-1 text-primary"></div>
+                                                    </div>
+
+                                                    <div class="mb-3">
+                                                        <label for="descripcioncategoria<?= $categoria['id'] ?>"
+                                                            name="descripcion" class="form-label">Descripcion</label>
+                                                        <input type="text" class="form-control"
+                                                            name="descripcion" id="descripcioncategoria<?= $categoria['id'] ?>"
+                                                            value="<?= $categoria['descripcion'] ?>" />
+                                                    </div>
+                                                    
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Cancelar</button>
+                                                        <button type="submit" class="btn btn-secondary">Guardar</button>
+                                                    </div>
+
+                                                </form>
+                                            </div>
+                                        </div> 
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                            
                         </tbody>
                     </table>
-                    <div id="tablaInfo" class="dataTables_info">Mostrando 1 a 5 de 5 entradas</div>
+                    <!-- <div id="tablaInfo" class="dataTables_info">Mostrando 1 a 5 de 5 entradas</div>
                     <div id="paginacion" class="dataTables_paginate">
-                        <button class="paginate_button previous disabled">Anterior</button>
+                        <button class="paginate_button previous ">Anterior</button>
                         <span><button class="paginate_button current">1</button></span>
-                        <button class="paginate_button next disabled">Siguiente</button>
-                    </div>
+                        <button class="paginate_button next ">Siguiente</button>
+                    </div> -->
                 </div>
             </div>
         </div>
@@ -330,15 +424,30 @@
             }
             
             // Si la imagen ya incluye la ruta completa, la usamos tal como está
-            if (imagen.startsWith('../../uploads/') || imagen.startsWith('uploads/')) {
+            if (imagen.startsWith('../../Image/categorias') || imagen.startsWith('Image/categorias')) {
                 return imagen.startsWith('../../') ? imagen : '../../' + imagen;
             }
             
             // Si no, construimos la ruta
-            return '../../uploads/' + imagen.replace('uploads/', '');
+            return '../../Image/categorias' + imagen.replace('Image/categorias', '');
         }
 
+        function mostrarNombreArchivo(input) {
+        const nombreArchivo = input.files[0]?.name || 'Ningún archivo seleccionado';
+        const id = input.id.replace('imagenproducto', 'nombreArchivo');
+        document.getElementById(id).textContent = 'Seleccionado: ' + nombreArchivo;
+        }
         
+        //buscar categorias
+        document.getElementById("buscar").addEventListener("keyup", function () {
+        const filtro = this.value.toLowerCase();
+        const filas = document.querySelectorAll("#categoryTable tbody tr");
+
+        filas.forEach(fila => {
+            const textoFila = fila.textContent.toLowerCase();
+            fila.style.display = textoFila.includes(filtro) ? "" : "none";
+        });
+        });
     </script>
 </body>
 </html>
