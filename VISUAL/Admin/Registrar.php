@@ -136,11 +136,7 @@ session_start();
             ?>
         <?php endif; ?>
         
-<<<<<<< HEAD
-        <form id="formularioRegistro" method="POST" action="../../controladores/UsuarioController.php?action=registrar">
-=======
         <form id="formularioRegistro" method="POST" action="../../controladores/UsuarioController.php?accion=registrar">
->>>>>>> 73baf7c9e940a60510e1298197d1a93e0420781f
             <div style="margin-bottom: 20px; font-size: 1.1em;">Crea tu cuenta</div>
             
             <label for="usuario">Usuario</label>
