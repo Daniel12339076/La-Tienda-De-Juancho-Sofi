@@ -52,4 +52,13 @@ function actualizar($conn, $data) {
     mysqli_query($conn, $sql) or die("Error al actualizar la categoría: " . mysqli_error($conn));
     header("Location: ../VISUAL/Admin/categorias.php");
 }
+
+function obtenerCategoriaPorID($conn, $id) {
+    $result = mysqli_query($conn, "SELECT * FROM categorias wHERE id = $id");
+    if ($result) {
+        return mysqli_fetch_assoc($result);
+    } else {
+        return null; // O manejar el error de otra manera
+    }
+}
 ?>

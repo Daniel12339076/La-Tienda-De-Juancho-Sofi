@@ -335,7 +335,7 @@ session_start();
                                         <button class="btn-opciones btn-editar" data-bs-toggle="modal" data-bs-target="#modalEditar<?= $categoria['id'] ?>">
                                             <i class="fas fa-edit"></i> Editar
                                         </button>
-                                        <button class="btn-opciones btn-eliminar" onclick="eliminarCategoria(<?php echo $categoria['id']; ?>)">
+                                        <button class="btn-opciones btn-eliminar" onclick="eliminar(event, <?= $categoria['id'] ?>)">
                                             <i class="fas fa-trash-alt"></i> Eliminar
                                         </button>
                                     </td>
@@ -448,6 +448,19 @@ session_start();
             fila.style.display = textoFila.includes(filtro) ? "" : "none";
         });
         });
+
+        //eliminar categoria
+        async function eliminar(event, id) {
+            event.preventDefault();
+            const confirmarSalida = await confirmar(
+                '¿Estás seguro de que deseas eliminar esta CATEGORÍA?',
+                'SÍ', 'No', 'warning'
+            );
+
+            if (confirmarSalida) {
+                window.location.href = `../../controladores/CategoriaController.php?accion=eliminar&id=${id}`;
+            }
+        }
     </script>
 </body>
 </html>

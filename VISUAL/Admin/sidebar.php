@@ -29,6 +29,7 @@
             <li class=""><a href="../../controladores/UsuarioController.php?accion=salir" class="nav-link"><i class="fas fa-sign-out-alt"></i> Salir</a></li>
         </ul>
     </div>
-
+    <script src='../../libs/SweetAlert2/sweetalert2.all.min.js'></script>
+    <script src='../alertas/funcionesalert.js'></script>
 </body>
 </html>

@@ -13,11 +13,13 @@ elseif ($accion=='registrar') {
     registrar($conn, $_POST);
 
 } elseif ($accion == 'actualizar') {
+    $categoria = obtenerCategoriaPorID($conn, $_POST['id']);
     $_POST['imagen'] = guardar_imagen($_FILES['imagen']);
     actualizar($conn, $_POST);
 
 }
 elseif ($accion == 'eliminar') {
+    $categoria = obtenerCategoriaPorID($conn, $_GET['id']);
     eliminar_imagen( $categoria);
     eliminar($conn, $_GET['id']);
 }
