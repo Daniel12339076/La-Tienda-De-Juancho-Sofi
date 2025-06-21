@@ -9,54 +9,54 @@
 	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 	<script src="../js/jquery-3.4.1.js"></script>
 	<style>
-	 body {
-        font-family: 'Poppins', serif;
-        background-color:  rgb(0, 0, 0);
-        color: black; /* Texto blanco */
-        margin: 0;
-        padding: 0;
-		
-    }
-
-	.container {
-        padding: 20px;
-        border: 5px solid; /* Tamaño del borde */
-        border-image: linear-gradient(to right, #ffff00, #ff69b4) 1; /* Degradado amarillo y rosado */
-        border-radius: 10px; /* Bordes redondeados */
-        margin: 20px auto;
-        max-width: 800px; /* Ancho máximo del contenedor */
-    }
-	
-	/*body::before,
-    body::after {
-      content: '';
-      display: block;
-      position: fixed;
-      width: 100%;
-      height: 10px;
-      background: linear-gradient(to right, yellow, rgb(218, 37, 67));
-      z-index: 9999;
-    }
-
-    body::before {
-      top: 0;
-    }
-
-    body::after {
-      bottom: 0;
-    } */
-    
-		.cover {
-			background-color: black;
-			background-size: cover;
-			background-position: center;
-			height: 100vh;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			padding: 30px;
-			flex-direction: column;
+		body {
+			font-family: 'Poppins', serif;
+			background-color:  rgb(0, 0, 0);
+			color: black; /* Texto blanco */
+			margin: 0;
+			padding: 0;
+			
 		}
+
+		.container {
+			padding: 20px;
+			border: 5px solid; /* Tamaño del borde */
+			border-image: linear-gradient(to right, #ffff00, #ff69b4) 1; /* Degradado amarillo y rosado */
+			border-radius: 10px; /* Bordes redondeados */
+			margin: 20px auto;
+			max-width: 800px; /* Ancho máximo del contenedor */
+		}
+		
+		/*body::before,
+		body::after {
+		content: '';
+		display: block;
+		position: fixed;
+		width: 100%;
+		height: 10px;
+		background: linear-gradient(to right, yellow, rgb(218, 37, 67));
+		z-index: 9999;
+		}
+
+		body::before {
+		top: 0;
+		}
+
+		body::after {
+		bottom: 0;
+		} */
+		
+			.cover {
+				background-color: black;
+				background-size: cover;
+				background-position: center;
+				height: 100vh;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				padding: 30px;
+				flex-direction: column;
+			}
 
 		.logInForm {
         background-color: rgb(0, 0, 0); /* Fondo semitransparente */
@@ -71,7 +71,7 @@
         margin-top: 150px;
         border: 5px solid; /* Borde del formulario */
         border-image: linear-gradient(to right, #ffff00, #ff69b4) 1; /* Degradado amarillo y rosado */
-    }
+    	}
 
 		.dashboard-Navbar {
 			background-color: rgb(0, 0, 0);
@@ -167,18 +167,18 @@
 			transition: background-color 0.3s;
 		}
 		.dashboard-Navbar h1,
-.logInForm,
-.form-control,
-.btncolor {
-    font-family: 'Poppins', sans-serif; /* Aplica la fuente a los elementos clave */
-}
-		.btncolor:hover {
-			background-color: #ff69b4;
-			color: white;
+		.logInForm,
+		.form-control,
+		.btncolor {
+			font-family: 'Poppins', sans-serif; /* Aplica la fuente a los elementos clave */
 		}
-    .logInForm {
-        margin-top: 150px; /* Ajusta este valor según sea necesario */
-    }
+				.btncolor:hover {
+					background-color: #ff69b4;
+					color: white;
+				}
+			.logInForm {
+				margin-top: 150px; /* Ajusta este valor según sea necesario */
+			}
 
 	</style>
 </head>
