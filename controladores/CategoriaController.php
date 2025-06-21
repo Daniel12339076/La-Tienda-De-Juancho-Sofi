@@ -9,6 +9,7 @@ elseif ($accion=='salir') {
     salir();
 }
 elseif ($accion=='registrar') {
+    
     registrar($conn, $_POST);
 
 } elseif ($accion == 'actualizar') {
