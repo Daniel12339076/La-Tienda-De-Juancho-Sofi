@@ -137,18 +137,25 @@
     
     <?php 
     include 'sidebar.php';
-    include  'header.php'; 
+    include  'header.php';
+    include '../../config/conexion.php';
+    include '../../modelos/PedidoModel.php';
+    $ordenes=obtenerpedido($conn);
     ?>
 
     <div class="content-wrapper">
+        
         <div class="content-header">
             <h2><i class="fas fa-truck"></i> Gestión de Pedidos</h2>
+            <input type="search" id="buscar" class="form-control form-control-sm" placeholder="Buscar Pedido...">
         </div>
         <div class="orders-management-container">
             <table class="orders-table">
                 <thead>
                     <tr>
+                        <th>Id</th>
                         <th>Número Orden</th>
+                        <th>Id_Usuario</th>
                         <th>Fecha</th>
                         <th>Total</th>
                         <th>Detalles</th>
@@ -157,19 +164,35 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td data-label="Número Orden">L4IOK7</td>
-                        <td data-label="Fecha">2024-10-11</td>
-                        <td data-label="Total">$227000</td>
-                        <td data-label="Detalles"><button class="btn-opciones btn-detalles"><i class="fas fa-info-circle"></i></button></td>
-                        <td data-label="Confirmar"><button class="btn-opciones btn-confirmar"><i class="fas fa-check"></i></button></td>
-                        <td data-label="Rechazar"><button class="btn-opciones btn-rechazar"><i class="fas fa-times"></i></button></td>
-                    </tr>
-                    </tbody>
+                    <?php foreach ($ordenes as $orden ): ?>
+                        <tr>
+                            <td data.label="Id"><?= $orden['id'] ?></td>
+                            <td data-label="Número Orden"><?= $orden['codigo'] ?></td>
+                            <td data-label="id_usuario"><?= $orden['id_usuario'] ?></td>
+                            <td data-label="Fecha"><?= $orden['fecha'] ?></td>
+                            <td data-label="Total"><?= '$' . number_format($orden['total'], 0, ',', '.') ?></td>
+                            <td data-label="Detalles"><?= $orden['detalles'] ?></td>
+                            <td data-label="Confirmar"><button class="btn-opciones btn-confirmar"><i class="fas fa-check"></i></button></td>
+                            <td data-label="Rechazar"><button class="btn-opciones btn-rechazar"><i class="fas fa-times"></i></button></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
             </table>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        //buscar
+         document.getElementById("buscar").addEventListener("keyup", function () {
+        const filtro = this.value.toLowerCase();
+        const filas = document.querySelectorAll(".orders-table tbody tr");
+
+        filas.forEach(fila => {
+            const textoFila = fila.textContent.toLowerCase();
+            fila.style.display = textoFila.includes(filtro) ? "" : "none";
+        });
+        });
+    </script>
 </body>
 </html>

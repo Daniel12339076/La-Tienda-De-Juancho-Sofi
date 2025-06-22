@@ -229,6 +229,7 @@ session_start();
                 <table class="user-table">
                     <thead>
                         <tr>
+                            <th>Id</th>
                             <th>Nombre</th>
                             <th>Correo</th>
                             <th>Celular</th>
@@ -240,6 +241,7 @@ session_start();
                     <tbody>
                         <?php foreach ($usuarios as $usuario): ?>
                             <tr>
+                                <td><?= $usuario['id']; ?></td>
                                 <td><?php echo htmlspecialchars($usuario['nombre']); ?></td>
                                 <td><?php echo htmlspecialchars($usuario['correo']); ?></td>
                                 <td><?php echo htmlspecialchars($usuario['celular']); ?></td>

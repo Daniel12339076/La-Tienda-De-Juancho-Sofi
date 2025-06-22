@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 13-06-2025 a las 21:17:02
+-- Tiempo de generación: 23-06-2025 a las 00:42:22
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -34,6 +34,16 @@ CREATE TABLE `categorias` (
   `imagen` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `categorias`
+--
+
+INSERT INTO `categorias` (`id`, `nombre`, `descripcion`, `imagen`) VALUES
+(4, 'MMN´KJ {KJ ', '{khhjgj ujgfciyfciyfc', '6858346272b34-ALQUILOS.jpg'),
+(5, 'MMN´KJ {KJ ', '{khhjgj ujgfciyfciyfc', ''),
+(6, 'Juan Cerquera', 'jvjg ñjg hg hf igfxigfcigfxctgfc', ''),
+(7, 'okokok', 'kokookokokokokokokokokokokok', '');
+
 -- --------------------------------------------------------
 
 --
@@ -54,13 +64,19 @@ CREATE TABLE `contactar` (
 
 CREATE TABLE `ordenes` (
   `id` int(11) NOT NULL,
-  `fecha` date DEFAULT NULL,
+  `fecha` timestamp NULL DEFAULT NULL,
   `total` int(11) DEFAULT NULL,
   `codigo` varchar(9) DEFAULT NULL,
-  `tipo_venta` enum('online','local') DEFAULT NULL,
-  `estado` enum('Solicitado','Atendido','Entregado','Rechazado') DEFAULT NULL,
-  `id_usuario` int(11) DEFAULT NULL
+  `id_usuario` int(11) DEFAULT NULL,
+  `detalles` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `ordenes`
+--
+
+INSERT INTO `ordenes` (`id`, `fecha`, `total`, `codigo`, `id_usuario`, `detalles`) VALUES
+(13, '2025-06-22 22:24:47', 1650000, 'ORD-YHO8G', 20, '3x Chanclas ($1.500.000), 1x Zapatos ($150.000)');
 
 -- --------------------------------------------------------
 
@@ -71,15 +87,21 @@ CREATE TABLE `ordenes` (
 CREATE TABLE `productos` (
   `id` int(11) NOT NULL,
   `nombre` varchar(50) DEFAULT NULL,
-  `precio_unitario` varchar(150) DEFAULT NULL,
+  `precio_unitario` double DEFAULT NULL,
   `cantidad` int(11) DEFAULT NULL,
-  `descuento` int(11) DEFAULT NULL,
-  `imagen` varchar(50) DEFAULT NULL,
+  `imagen` varchar(200) DEFAULT NULL,
   `id_categoria` int(11) DEFAULT NULL,
-  `tallas` varchar(200) DEFAULT NULL,
-  `colores` varchar(100) DEFAULT NULL,
-  `descripcion` text DEFAULT NULL
+  `descripcion` text DEFAULT NULL,
+  `estado` enum('ACTI','INAC') DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `productos`
+--
+
+INSERT INTO `productos` (`id`, `nombre`, `precio_unitario`, `cantidad`, `imagen`, `id_categoria`, `descripcion`, `estado`) VALUES
+(1, 'Zapatos', 150000, 20, '685833d1d27e8-Captura de pantalla 2025-04-27 173006.jpg', 6, 'okokkookokokookokokok', 'INAC'),
+(2, 'Chanclas', 500000, 20, '6858339be47e1-ALCANOS.png', 6, 'zapatillas si abueno', 'ACTI');
 
 -- --------------------------------------------------------
 
@@ -101,9 +123,11 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`id`, `nombre`, `correo`, `celular`, `clave`, `rol`) VALUES
-(1, 'admin', 'admin@tiendajuancho.com', 2147483647, '$2y$10$4DvkKfMZU9Igwa1mSjS4pOAZTPSsiDOJ3wXeTtEIHD9m.Q1OKtu/K', 'administrador'),
-(4, 'julio', 'julio@gmail.com', 573102366157, '$2y$10$4DvkKfMZU9Igwa1mSjS4pOAZTPSsiDOJ3wXeTtEIHD9m.Q1OKtu/K', 'vendedor'),
-(11, 'Juan', 'juan@gmail.com', 573102366157, '$2y$10$4DvkKfMZU9Igwa1mSjS4pOAZTPSsiDOJ3wXeTtEIHD9m.Q1OKtu/K', 'vendedor');
+(1, 'admin', 'admin@tiendajuancho.com', 2147483647, '$2y$10$qJQRXQGrYzYQ5Hl.Yc7X2.Q0yw0TJ9XO3y3X5V9YG9Y9Y9Y9Y9Y9Y', 'administrador'),
+(4, 'julio', 'julio@gmail.com', 573102366157, '$2y$10$4DvkKfMZU9Igwa1mSjS4pOAZTPSsiDOJ3wXeTtEIHD9m.Q1OKtu/K', 'vendedor'), --julio1
+(11, 'Juan', 'juan@gmail.com', 573102366157, '$2y$10$6NT9SWGf/gM8XePW5GY39uMe9uear9ZnYEnTXMIz5qBctY4TR1jxe', 'vendedor'), --juan10
+(13, 'vrenda', 'vrenda@gmail.com', 573027111702, '$2y$10$oRzgGeUWUkRMSECNjlW4YOmZscmT6oKad2olVoQT9lNXjWR1T0/py', 'cliente'), --vrenda
+(20, 'ESTEBAN', 'esteban@gmail.com', 3208653588, '$2y$10$qFaZWhwRhl0vAjMLcxU7wefUPI5quyag55I2wbVj8jXcCoNDGkLFq', 'empleado'); --esteban
 
 -- --------------------------------------------------------
 
@@ -113,10 +137,10 @@ INSERT INTO `usuarios` (`id`, `nombre`, `correo`, `celular`, `clave`, `rol`) VAL
 
 CREATE TABLE `ventas` (
   `id` int(11) NOT NULL,
-  `id_producto` int(11) DEFAULT NULL,
-  `cantidad` int(11) DEFAULT NULL,
+  `detalles` text DEFAULT NULL,
+  `id_usuario` int(11) DEFAULT NULL,
   `valor_total` int(11) DEFAULT NULL,
-  `id_orden` int(11) DEFAULT NULL
+  `fecha` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -140,6 +164,7 @@ ALTER TABLE `contactar`
 --
 ALTER TABLE `ordenes`
   ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `codigo` (`codigo`),
   ADD KEY `id_usuario` (`id_usuario`);
 
 --
@@ -157,12 +182,11 @@ ALTER TABLE `usuarios`
   ADD UNIQUE KEY `correo` (`correo`);
 
 --
--- Indices de la tabla `ventas tienda juancho`
+-- Indices de la tabla `ventas`
 --
 ALTER TABLE `ventas`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `id_producto` (`id_producto`),
-  ADD KEY `id_orden` (`id_orden`);
+  ADD KEY `id_usuario` (`id_usuario`) USING BTREE;
 
 --
 -- AUTO_INCREMENT de las tablas volcadas
@@ -172,7 +196,7 @@ ALTER TABLE `ventas`
 -- AUTO_INCREMENT de la tabla `categorias`
 --
 ALTER TABLE `categorias`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de la tabla `contactar`
@@ -184,25 +208,25 @@ ALTER TABLE `contactar`
 -- AUTO_INCREMENT de la tabla `ordenes`
 --
 ALTER TABLE `ordenes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT de la tabla `productos`
 --
 ALTER TABLE `productos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT de la tabla `ventas`
 --
 ALTER TABLE `ventas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- Restricciones para tablas volcadas
@@ -224,8 +248,7 @@ ALTER TABLE `productos`
 -- Filtros para la tabla `ventas`
 --
 ALTER TABLE `ventas`
-  ADD CONSTRAINT `ventas_ibfk_1` FOREIGN KEY (`id_producto`) REFERENCES `productos` (`id`),
-  ADD CONSTRAINT `ventas_ibfk_2` FOREIGN KEY (`id_orden`) REFERENCES `ordenes` (`id`);
+  ADD CONSTRAINT `ventas_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

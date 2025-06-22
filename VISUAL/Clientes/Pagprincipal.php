@@ -8,7 +8,6 @@
 
 
   // Obtener información del usuario
-  $usuario = $_SESSION['usuario'];
   $nombreUsuario = $_SESSION['nombre']
 ?>
 <!DOCTYPE html>
@@ -19,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>La Tienda de Juancho & Sofi</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="misstyles.css">
+  <link rel="stylesheet" href="misestilos.css">
   <link rel="icon" href="../Image/Logo juancho.png" type="image/png">
   <style>
     /* Fondo negro y texto blanco */
@@ -119,6 +118,8 @@
       border-color: #fff;
       /* Borde blanco al pasar el mouse */
       transition: 0.3s;
+      /*cursor*/
+      cursor: pointer;
     }
 
     /* Footer */
