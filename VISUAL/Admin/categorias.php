@@ -319,6 +319,7 @@ session_start();
                     <table id="categoryTable" class="category-table">
                         <thead>
                             <tr>
+                                <th>Id</th>
                                 <th>Nombre</th>
                                 <th>Descripción</th>
                                 <th>Opciones</th>
@@ -328,6 +329,7 @@ session_start();
                             <!-- Las categorías se cargarán aquí dinámicamente -->
                             <?php foreach ($categorias as $categoria): ?>
                                 <tr>
+                                    <td><?php echo htmlspecialchars($categoria['id']); ?></td>
                                     <td><?php echo htmlspecialchars($categoria['nombre']); ?></td>
                                     <td><textarea readonly name="descripcion" rows="1" ><?php echo htmlspecialchars($categoria['descripcion']); ?></textarea></td>
 

@@ -290,7 +290,12 @@
 <body>
    <?php 
    include 'sidebar.php';
-   include  'header.php'; 
+   include  'header.php';
+   include '../../config/Conexion.php';
+   include '../../modelos/ProductoModel.php';
+   $productos = obtenerProductos($conn);
+   $categorias = obtenerCategorias($conn);
+
    ?>
 
     <div class="content-wrapper">
@@ -303,7 +308,7 @@
                 
                 <div id="mensaje" class="alert" style="display: none;"></div>
                 
-                <form id="formProducto" enctype="multipart/form-data">
+                <form action="../../controladores/ProductoController.php?accion=registrar" method="POST" id="formProducto" enctype="multipart/form-data">
                     <div class="form-group">
                         <label for="nombre">Nombre</label>
                         <input type="text" id="nombre" name="nombre" required>
@@ -318,19 +323,22 @@
                     </div>
                     <div class="form-group">
                         <label for="stock">Stock</label>
-                        <input type="number" id="stock" name="stock" min="0" required>
+                        <input type="number" id="stock" name="cantidad" min="0" required>
                     </div>
                     <div class="form-group">
                         <label for="categoria_id">Categoría</label>
                         <select id="categoria_id" name="categoria_id" required>
-                            <option value="">Seleccionar categoría</option>
+                            <option value="">Seleccione una categoría</option>
+                            <?php foreach ($categorias as $categoria): ?>
+                                <option value="<?= $categoria['id']; ?>"><?= $categoria['nombre']; ?></option>
+                            <?php endforeach; ?>
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="estado">Estado</label>
                         <select id="estado" name="estado" required>
-                            <option value="activo">Activo</option>
-                            <option value="inactivo">Inactivo</option>
+                            <option value="ACTI">Activo</option>
+                            <option value="INAC">Inactivo</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -348,16 +356,14 @@
             <div class="product-table-section">
                 <div class="dataTables_wrapper">
                     <div class="dataTables_filter">
-                        <label>Buscar:<input type="search" id="buscar" placeholder="" aria-controls="productTable"></label>
+                        <input type="search" id="buscar" class="form-control form-control-sm" placeholder="Buscar Producto...">
                     </div>
                     <br>
-                    <div class="dataTables_length">
-                        <label>Mostrar <select id="entriesPorPagina" aria-controls="productTable"><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select> entradas</label>
-                    </div>
+                    
                     <table id="productTable" class="product-table">
                         <thead>
                             <tr>
-                                <th>Imagen</th>
+                                <th>Id</th>
                                 <th>Nombre</th>
                                 <th>Categoría</th>
                                 <th>Precio</th>
@@ -367,15 +373,118 @@
                             </tr>
                         </thead>
                         <tbody id="tablaProductos">
-                            <!-- Los productos se cargarán aquí dinámicamente -->
+                            <?php foreach ($productos as $producto): ?>
+                            <tr>
+                                <td><?= $producto['id']; ?></td>
+                                
+                                <td><?= $producto['nombre']; ?></td>
+                                <td><?= $producto['id_categoria']; ?></td>
+                                <td class="price-cell">$<?= number_format($producto['precio_unitario'], 2, ',', '.'); ?></td>
+                                <td class="stock-cell">
+                                    <?= $producto['cantidad']; ?>
+                                    <?php if ($producto['cantidad'] < 5): ?>
+                                        <span class="stock-low">Bajo Stock</span>
+                                    <?php endif; ?> 
+                                </td>
+                                <td>
+                                    <span class="status-badge">
+                                        <?php if ($producto['estado'] == 'ACTI'): ?>
+                                            <span class="status-activo">Habilitado</span>
+                                        <?php else: ?>
+                                            <span class="status-inactivo">Inactivo</span>
+                                        <?php endif; ?>
+                                    </span>
+                                </td>
+                                <td>
+                                    <button class="btn-opciones btn-editar" data-bs-toggle="modal" data-bs-target="#modalEditarProducto<?= $producto['id']; ?>">
+                                        <i class="fas fa-edit"></i> Editar
+                                    </button>
+                                    <button class="btn-opciones btn-eliminar" onclick="eliminarProducto(<?= $producto['id']; ?>)">
+                                        <i class="fas fa-trash"></i> Eliminar
+                                    </button>
+                                </td>
+                            </tr>
+                            <!-- Modal para editar producto -->
+                            <div class="modal fade" 
+                                id="modalEditarProducto<?= $producto['id']; ?>" tabindex="-1" aria-labelledby="modalEditarProductoLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="modalEditarProductoLabel">Editar Producto</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body"> 
+                                            <form action="../../controladores/ProductoController.php?accion=actualizar" method="POST" enctype="multipart/form-data">
+                                                <input type="hidden" name="id" value="<?= $producto['id']; ?>">
+                                                <div class="form-group">
+                                                    <label for="nombreEditar">Nombre</label>
+                                                    <input type="text" id="nombreEditar" name="nombre" value="<?= $producto['nombre']; ?>" required> 
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="descripcionEditar">Descripción</label>
+                                                    <textarea id="descripcionEditar" name="descripcion" rows="3" required><?= $producto['descripcion']; ?></textarea>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="precioEditar">Precio</label>
+                                                    <input type="number" id="precioEditar" name="precio" step="0.01" min="0" value="<?= $producto['precio_unitario']; ?>" required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="stockEditar">Stock</label>
+                                                    <input type="number" id="stockEditar" name="cantidad" min="0" value="<?= $producto['cantidad']; ?>" required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="categoriaEditar">Categoría</label>
+                                                    <select id="categoriaEditar" name="categoria_id" required>
+                                                        <option value="">Seleccione una categoría</option>
+                                                        <?php foreach ($categorias as $categoria): ?>
+                                                            <option value="<?= $categoria['id']; ?>" <?php if ($producto['id_categoria'] == $categoria['id']) echo 'selected'; ?>>
+                                                                <?= $categoria['nombre']; ?>
+                                                            </option>
+                                                        <?php endforeach; ?>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="estadoEditar">Estado</label>
+                                                    <select id="estadoEditar" name="estado" required>
+                                                        <option value="ACTI" <?php if ($producto['estado'] == 'ACTI') echo 'selected'; ?>>Habilitado</option>
+                                                        <option value="INAC" <?php if ($producto['estado'] == 'INAC') echo 'selected'; ?>>Inactivo</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                        <label for="imagenproducto<?= $producto['id'] ?>" class="form-label">Imagen</label>
+                                                        <input type="file"
+                                                            id="imagenproducto<?= $producto['id'] ?>"
+                                                            name="imagen"
+                                                            accept="image/*"
+                                                            class="form-control"
+                                                            onchange="mostrarNombreArchivo(this)" />
+                                                        
+                                                        <!-- Mostrar el nombre del archivo actual -->
+                                                        <div class="form-text text-success mt-1">
+                                                            Archivo actual: <?= htmlspecialchars($producto['imagen']) ?>
+                                                        </div>
+                                                       
+
+                                                        <!-- Aquí se mostrará el nuevo archivo seleccionado -->
+                                                        <div id="nombreArchivo<?= $producto['id'] ?>" class="form-text mt-1 text-primary"></div>
+                                                    </div>
+                                                <button type="submit" class="btn-guardar">
+                                                    <i class="fas fa-save"></i> Guardar Cambios
+                                                </button>
+                                            </form>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <?php endforeach; ?>
+
                         </tbody>
                     </table>
-                    <div id="tablaInfo" class="dataTables_info">Mostrando 1 a 5 de 5 entradas</div>
-                    <div id="paginacion" class="dataTables_paginate">
-                        <button class="paginate_button previous disabled">Anterior</button>
-                        <span><button class="paginate_button current">1</button></span>
-                        <button class="paginate_button next disabled">Siguiente</button>
-                    </div>
+                    
                 </div>
             </div>
         </div>
@@ -383,422 +492,21 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Variables globales
-        let productos = [];
-        let productosFiltrados = [];
-        let categorias = [];
-        let paginaActual = 1;
-        let entriesPorPagina = 10;
-        let editandoId = null;
+        function mostrarNombreArchivo(input) {
+        const nombreArchivo = input.files[0]?.name || 'Ningún archivo seleccionado';
+        const id = input.id.replace('imagenproducto', 'nombreArchivo');
+        document.getElementById(id).textContent = 'Seleccionado: ' + nombreArchivo;
+        }
+        //Buscar en la tabla
+        document.getElementById("buscar").addEventListener("keyup", function () {
+        const filtro = this.value.toLowerCase();
+        const filas = document.querySelectorAll("#productTable tbody tr");
 
-        // Inicializar cuando se carga la página
-        document.addEventListener('DOMContentLoaded', function() {
-            cargarCategorias();
-            cargarProductos();
-            configurarEventos();
+        filas.forEach(fila => {
+            const textoFila = fila.textContent.toLowerCase();
+            fila.style.display = textoFila.includes(filtro) ? "" : "none";
         });
-
-        // Configurar eventos
-        function configurarEventos() {
-            document.getElementById('formProducto').addEventListener('submit', guardarProducto);
-            document.getElementById('buscar').addEventListener('input', function() {
-                buscarProductos(this.value);
-            });
-            document.getElementById('entriesPorPagina').addEventListener('change', function() {
-                entriesPorPagina = parseInt(this.value);
-                paginaActual = 1;
-                mostrarProductos();
-            });
-            document.getElementById('imagen').addEventListener('change', function() {
-                mostrarPreviewImagen(this);
-            });
-        }
-
-        // Cargar categorías para el select
-        async function cargarCategorias() {
-            try {
-                console.log('Intentando cargar categorías...');
-                const response = await fetch('../../controladores/CategoriaController.php?accion=obtener');
-                console.log('Respuesta recibida:', response);
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                const data = await response.json();
-                console.log('Datos de categorías:', data);
-                
-                if (data.success) {
-                    categorias = data.data;
-                    const select = document.getElementById('categoria_id');
-                    select.innerHTML = '<option value="">Seleccionar categoría</option>';
-                    
-                    categorias.forEach(categoria => {
-                        const option = document.createElement('option');
-                        option.value = categoria.id;
-                        option.textContent = categoria.nombre;
-                        select.appendChild(option);
-                    });
-                    console.log('Categorías cargadas exitosamente');
-                } else {
-                    throw new Error(data.message || 'Error desconocido');
-                }
-            } catch (error) {
-                console.error('Error al cargar categorías:', error);
-                mostrarMensaje('Error al cargar categorías. Verifica la conexión.', 'error');
-            }
-        }
-
-        // Cargar productos desde la base de datos
-        async function cargarProductos() {
-            try {
-                console.log('Intentando cargar productos...');
-                const response = await fetch('../../controladores/ProductoController.php?accion=obtener');
-                console.log('Respuesta de productos:', response);
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                const data = await response.json();
-                console.log('Datos de productos:', data);
-                
-                if (data.success) {
-                    productos = data.data;
-                    productosFiltrados = [...productos];
-                    mostrarProductos();
-                    console.log('Productos cargados exitosamente');
-                } else {
-                    throw new Error(data.message || 'Error desconocido');
-                }
-            } catch (error) {
-                console.error('Error al cargar productos:', error);
-                mostrarMensaje('Error de conexión al cargar productos', 'error');
-            }
-        }
-
-        // Buscar productos
-        async function buscarProductos(termino) {
-            if (termino.trim() === '') {
-                productosFiltrados = [...productos];
-                mostrarProductos();
-                return;
-            }
-            
-            try {
-                const response = await fetch(`../../controladores/ProductoController.php?accion=buscar&termino=${encodeURIComponent(termino)}`);
-                const data = await response.json();
-                
-                if (data.success) {
-                    productosFiltrados = data.data;
-                } else {
-                    mostrarMensaje('Error en la búsqueda: ' + (data.message || ''), 'error');
-                }
-            } catch (error) {
-                console.error('Error en búsqueda:', error);
-                mostrarMensaje('Error de conexión durante la búsqueda', 'error');
-            }
-            
-            paginaActual = 1;
-            mostrarProductos();
-        }
-
-        // Función para obtener la ruta correcta de la imagen
-        function obtenerRutaImagen(imagen) {
-            if (!imagen || imagen === null || imagen === 'null') {
-                return null;
-            }
-            
-            return '../../uploads/' + imagen;
-        }
-
-        // Mostrar productos en la tabla
-        function mostrarProductos() {
-            const tbody = document.getElementById('tablaProductos');
-            const inicio = (paginaActual - 1) * entriesPorPagina;
-            const fin = inicio + entriesPorPagina;
-            const productosPagina = productosFiltrados.slice(inicio, fin);
-            
-            tbody.innerHTML = '';
-            
-            if (productosPagina.length === 0) {
-                const fila = document.createElement('tr');
-                fila.innerHTML = '<td colspan="7" class="text-center">No hay productos disponibles</td>';
-                tbody.appendChild(fila);
-            } else {
-                productosPagina.forEach(producto => {
-                    const fila = document.createElement('tr');
-                    
-                    // Manejar la imagen
-                    let imagenHtml = '';
-                    const rutaImagen = obtenerRutaImagen(producto.imagen);
-                    
-                    if (rutaImagen) {
-                        imagenHtml = `<img src="${rutaImagen}" alt="Imagen de ${producto.nombre}" class="producto-imagen" 
-                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                    <div class="imagen-placeholder" style="display: none;">Sin imagen</div>`;
-                    } else {
-                        imagenHtml = `<div class="imagen-placeholder">Sin imagen</div>`;
-                    }
-
-                    // Estado
-                    const estadoClass = producto.estado === 'activo' ? 'status-activo' : 'status-inactivo';
-                    const estadoTexto = producto.estado === 'activo' ? 'Activo' : 'Inactivo';
-
-                    // Stock con alerta si es bajo
-                    const stockClass = producto.stock < 10 ? 'stock-low' : '';
-                    
-                    fila.innerHTML = `
-                        <td>${imagenHtml}</td>
-                        <td>
-                            <strong>${producto.nombre}</strong><br>
-                            <small>${producto.descripcion}</small>
-                        </td>
-                        <td>${producto.categoria_nombre || 'Sin categoría'}</td>
-                        <td class="price-cell">$${parseFloat(producto.precio).toFixed(2)}</td>
-                        <td class="stock-cell ${stockClass}">${producto.stock}</td>
-                        <td><span class="status-badge ${estadoClass}">${estadoTexto}</span></td>
-                        <td>
-                            <button class="btn-opciones btn-editar" onclick="editarProducto(${producto.id})">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button class="btn-opciones btn-eliminar" onclick="eliminarProducto(${producto.id})">
-                                <i class="fas fa-trash-alt"></i>
-                            </button>
-                        </td>
-                    `;
-                    tbody.appendChild(fila);
-                });
-            }
-            
-            actualizarInfoPaginacion();
-            actualizarPaginacion();
-        }
-
-        // Guardar producto (crear o actualizar)
-        async function guardarProducto(e) {
-            e.preventDefault();
-            
-            const formData = new FormData();
-            const nombre = document.getElementById('nombre').value.trim();
-            const descripcion = document.getElementById('descripcion').value.trim();
-            const precio = document.getElementById('precio').value;
-            const stock = document.getElementById('stock').value;
-            const categoria_id = document.getElementById('categoria_id').value;
-            const estado = document.getElementById('estado').value;
-            const imagen = document.getElementById('imagen').files[0];
-            
-            if (!nombre || !descripcion || !precio || !stock || !categoria_id) {
-                mostrarMensaje('Todos los campos son obligatorios', 'error');
-                return;
-            }
-            
-            toggleLoading(true);
-            
-            formData.append('nombre', nombre);
-            formData.append('descripcion', descripcion);
-            formData.append('precio', precio);
-            formData.append('stock', stock);
-            formData.append('categoria_id', categoria_id);
-            formData.append('estado', estado);
-            if (imagen) {
-                formData.append('imagen', imagen);
-            }
-            
-            if (editandoId) {
-                formData.append('accion', 'actualizar');
-                formData.append('id', editandoId);
-            } else {
-                formData.append('accion', 'crear');
-            }
-            
-            try {
-                const response = await fetch('../../controladores/ProductoController.php', {
-                    method: 'POST',
-                    body: formData
-                });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    mostrarMensaje(data.message, 'success');
-                    limpiarFormulario();
-                    cargarProductos();
-                } else {
-                    mostrarMensaje(data.message || 'Error al procesar la solicitud', 'error');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                mostrarMensaje('Error de conexión', 'error');
-            } finally {
-                toggleLoading(false);
-            }
-        }
-
-        // Editar producto
-        function editarProducto(id) {
-            const producto = productos.find(p => p.id == id);
-            if (producto) {
-                document.getElementById('nombre').value = producto.nombre;
-                document.getElementById('descripcion').value = producto.descripcion;
-                document.getElementById('precio').value = producto.precio;
-                document.getElementById('stock').value = producto.stock;
-                document.getElementById('categoria_id').value = producto.categoria_id;
-                document.getElementById('estado').value = producto.estado;
-                editandoId = id;
-                
-                // Si hay imagen, mostrar preview
-                if (producto.imagen) {
-                    const preview = document.getElementById('preview');
-                    preview.innerHTML = '';
-                    const img = document.createElement('img');
-                    img.src = obtenerRutaImagen(producto.imagen);
-                    img.style.maxWidth = '100px';
-                    img.style.maxHeight = '100px';
-                    img.style.objectFit = 'cover';
-                    img.style.border = '1px solid #ddd';
-                    img.style.borderRadius = '4px';
-                    preview.appendChild(img);
-                }
-                
-                document.querySelector('.btn-text').textContent = 'ACTUALIZAR';
-                document.querySelector('.product-form-section').scrollIntoView({ behavior: 'smooth' });
-            }
-        }
-
-        // Eliminar producto
-        async function eliminarProducto(id) {
-            if (!confirm('¿Estás seguro de que deseas eliminar este producto?')) {
-                return;
-            }
-            
-            const formData = new FormData();
-            formData.append('accion', 'eliminar');
-            formData.append('id', id);
-            
-            try {
-                const response = await fetch('../../controladores/ProductoController.php', {
-                    method: 'POST',
-                    body: formData
-                });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    mostrarMensaje(data.message, 'success');
-                    cargarProductos();
-                } else {
-                    mostrarMensaje(data.message || 'Error al eliminar', 'error');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                mostrarMensaje('Error de conexión', 'error');
-            }
-        }
-
-        // Limpiar formulario
-        function limpiarFormulario() {
-            document.getElementById('formProducto').reset();
-            document.getElementById('preview').innerHTML = '';
-            editandoId = null;
-            document.querySelector('.btn-text').textContent = 'GUARDAR';
-        }
-
-        // Mostrar mensaje
-        function mostrarMensaje(texto, tipo) {
-            const mensaje = document.getElementById('mensaje');
-            mensaje.textContent = texto;
-            mensaje.className = `alert alert-${tipo}`;
-            mensaje.style.display = 'block';
-            
-            setTimeout(() => {
-                mensaje.style.display = 'none';
-            }, 5000);
-        }
-
-        // Toggle loading
-        function toggleLoading(mostrar) {
-            const loading = document.querySelector('.loading');
-            const btnText = document.querySelector('.btn-text');
-            const btn = document.querySelector('.btn-guardar');
-            
-            if (mostrar) {
-                loading.classList.add('show');
-                btnText.style.display = 'none';
-                btn.disabled = true;
-            } else {
-                loading.classList.remove('show');
-                btnText.style.display = 'inline';
-                btn.disabled = false;
-            }
-        }
-
-        // Mostrar preview de imagen
-        function mostrarPreviewImagen(input) {
-            const preview = document.getElementById('preview');
-            preview.innerHTML = '';
-            
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const img = document.createElement('img');
-                    img.src = e.target.result;
-                    img.style.maxWidth = '100px';
-                    img.style.maxHeight = '100px';
-                    img.style.objectFit = 'cover';
-                    img.style.border = '1px solid #ddd';
-                    img.style.borderRadius = '4px';
-                    preview.appendChild(img);
-                };
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-
-        // Actualizar información de paginación
-        function actualizarInfoPaginacion() {
-            const info = document.getElementById('tablaInfo');
-            const total = productosFiltrados.length;
-            
-            if (total === 0) {
-                info.textContent = 'No hay entradas para mostrar';
-                return;
-            }
-            
-            const inicio = (paginaActual - 1) * entriesPorPagina + 1;
-            const fin = Math.min(inicio + entriesPorPagina - 1, total);
-            
-            info.textContent = `Mostrando ${inicio} a ${fin} de ${total} entradas`;
-        }
-
-        // Actualizar paginación
-        function actualizarPaginacion() {
-            const paginacion = document.getElementById('paginacion');
-            const totalPaginas = Math.ceil(productosFiltrados.length / entriesPorPagina);
-            
-            let html = '';
-            
-            html += `<button class="paginate_button ${paginaActual === 1 ? 'disabled' : ''}" 
-                     onclick="cambiarPagina(${paginaActual - 1})" 
-                     ${paginaActual === 1 ? 'disabled' : ''}>Anterior</button>`;
-            
-            html += `<span><button class="paginate_button current">${paginaActual}</button></span>`;
-            
-            html += `<button class="paginate_button ${paginaActual === totalPaginas || totalPaginas === 0 ? 'disabled' : ''}" 
-                     onclick="cambiarPagina(${paginaActual + 1})" 
-                     ${paginaActual === totalPaginas || totalPaginas === 0 ? 'disabled' : ''}>Siguiente</button>`;
-            
-            paginacion.innerHTML = html;
-        }
-
-        // Cambiar página
-        function cambiarPagina(nuevaPagina) {
-            const totalPaginas = Math.ceil(productosFiltrados.length / entriesPorPagina);
-            
-            if (nuevaPagina >= 1 && nuevaPagina <= totalPaginas) {
-                paginaActual = nuevaPagina;
-                mostrarProductos();
-            }
-        }
+        });
     </script>
 </body>
 </html>

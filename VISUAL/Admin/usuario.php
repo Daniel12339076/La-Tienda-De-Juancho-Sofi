@@ -223,6 +223,9 @@ session_start();
                 <div id="form-message"></div>
             </div>
             <div class="table-section">
+                <div class="dataTables_filter">
+                    <input type="search" id="buscar" class="form-control form-control-sm" placeholder="Buscar USUARIOS...">
+                </div>
                 <table class="user-table">
                     <thead>
                         <tr>
@@ -329,6 +332,17 @@ session_start();
                 window.location.href = `../../controladores/UsuarioController.php?accion=eliminar&id=${id}`;
             }
         }
+
+        //Buscar en la tabla
+        document.getElementById("buscar").addEventListener("keyup", function () {
+        const filtro = this.value.toLowerCase();
+        const filas = document.querySelectorAll("table tbody tr");
+
+        filas.forEach(fila => {
+            const textoFila = fila.textContent.toLowerCase();
+            fila.style.display = textoFila.includes(filtro) ? "" : "none";
+        });
+        });
     </script>
 </body>
 </html>
